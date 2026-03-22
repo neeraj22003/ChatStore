@@ -92,14 +92,14 @@ class CustomBottommodalSheet {
       return const SizedBox(height: 0);
     }
 
-    Widget sheet(SearchDomain? detail) {
+    Widget sheet(SearchDomain detail) {
       return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Wrap(
             alignment: WrapAlignment.start,
             children: [
-              titletext(detail!.title),
+              titletext(detail.title),
               readmore(detail.description),
               image(detail.imageUrl),
               Additionbuttonlist().build(context, detail),
@@ -129,9 +129,11 @@ class CustomBottommodalSheet {
             }
             if (snapshot.connectionState == ConnectionState.done) {
               final item = snapshot.data;
-              return sheet(item);
+              if (item != null) {
+                return sheet(item);
+              }
             }
-            return Text('error');
+            return Text(snapshot.error.toString());
           },
         );
       },

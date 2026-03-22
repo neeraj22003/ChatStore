@@ -13,7 +13,7 @@ class SearchRepo {
   Map<String, SearchDomain> cache = {};
 
   void addcacheitem(String key, SearchDomain item) {
-    if (cache.length >= 2) {
+    if (cache.length >= 6) {
       final firstitem = cache.keys.first;
       cache.remove(firstitem);
     }

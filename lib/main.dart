@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -22,7 +19,7 @@ import 'package:flutter_experiments/core/layout/providers/appbar_provider.dart';
 import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
 
 import 'package:provider/provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -36,15 +33,26 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => Userprovider(), lazy: false),
+        ChangeNotifierProxyProvider<Userprovider, CartProvider>(
+          create: (_) => CartProvider(null),
+          update: (context, user, previouscart) {
+            if (user.userDomain != null) {
+              final cart = CartProvider(user.userDomain);
+              cart.loaditems();
+              return cart;
+            }
+            return CartProvider(null);
+          },
+        ),
         ChangeNotifierProvider(create: (_) => Appbarprovider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => SearchbarProvider()),
         ChangeNotifierProvider(create: (_) => BottomsheetProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => Authprovider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
-        ChangeNotifierProvider(create: (_) => Userprovider(), lazy: false),
       ],
 
       child: const MyApp(),

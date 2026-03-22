@@ -1,15 +1,22 @@
 import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_experiments/features/cart/data/cart_repository.dart';
+import 'package:flutter_experiments/features/orders/data/orders_repositry.dart';
+import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
 
 import 'package:flutter_experiments/features/search/data/search_dto.dart';
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
+import 'package:flutter_experiments/features/search/data/search_repo.dart';
+
 import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
+import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 
 class CartProvider extends ChangeNotifier {
+  final UserDomain? user;
+  CartProvider(this.user);
   Map<String, SearchDomain> _cartitems = {};
   Map<String, SearchDomain> get cartitem => _cartitems;
 
@@ -18,12 +25,9 @@ class CartProvider extends ChangeNotifier {
   bool _isloading = false;
   bool get isloading => _isloading;
   Timer? _timer;
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
 
-  CartProvider() {
-    _init();
-  }
-
-  Future<void> _init() async {
+  Future<void> init() async {
     await loaditems();
   }
 
@@ -45,8 +49,10 @@ class CartProvider extends ChangeNotifier {
 
   void additem(SearchDomain item) async {
     _cartitems[item.itemId] = item;
-    await CartRepository().additem(item);
     notifyListeners();
+    if (userId != null) {
+      await CartRepository().additem(item, userId);
+    }
   }
 
   double get totalprice {
@@ -57,24 +63,41 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
-  void reset(OrderProvider orderprovider) async {
-    await CartRepository().cartToOrders(_cartitems);
-    notifyListeners();
-  }
-
   void quantity(int? quantity, EbuyItemsModel itemid) {
     _cartitems[itemid.itemId]?.quantity = quantity!;
     notifyListeners();
   }
 
   Future<void> loaditems() async {
-    final item = await CartRepository().loaditems();
+    if (userId != null) return;
+    final item = await CartRepository().loaditems(userId);
     _cartitems = Map.fromEntries(
       item.map((data) {
         return MapEntry(data.itemId, data);
       }),
     );
 
+    notifyListeners();
+  }
+
+  Future<void> placeOrder(BuildContext context, String total) async {
+    final orderrepo = OrdersRepositry();
+    if (userId != null) {
+      final itemlist = _cartitems.values.map((data) => data.toJson()).toList();
+
+      final order = Orders(
+        orderId: '',
+        name: user?.name ?? '',
+        phone: user?.phone ?? '',
+        address: user?.address ?? "",
+        total: total,
+        items: itemlist,
+      );
+      await orderrepo.addOrders(order, userId, context);
+    }
+
+    _cartitems.clear();
+    SearchRepo().cache.clear();
     notifyListeners();
   }
 }

@@ -17,13 +17,16 @@ class ItemsCard extends StatelessWidget {
 
     final bottomsheetprovider = context.read<BottomsheetProvider>();
 
-    double price = results[index].price;
+    double price = results[index].inrprice ?? 0.0;
 
     Widget titleTile() {
       return Expanded(
         child: ListTile(
           contentPadding: EdgeInsets.only(left: 30, right: 10),
-          trailing: Text('₹$price', style: TextStyle(fontSize: 15)),
+          trailing: Text(
+            '₹${price.toStringAsFixed(1)}',
+            style: TextStyle(fontSize: 15),
+          ),
 
           tileColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           onTap: () {
