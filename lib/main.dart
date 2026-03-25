@@ -6,11 +6,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
 import 'package:flutter_experiments/features/auth/ui/screen/login_page.dart';
+import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
 import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
 import 'package:flutter_experiments/features/search/ui/provider/searchbar_provider.dart';
+import 'package:flutter_experiments/features/search_users/ui/provider/search_user_provider.dart';
 import 'package:flutter_experiments/home.dart';
 import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
-import 'package:flutter_experiments/features/chats_history/ui/providers/privider.dart';
+import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
 
 import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
 
@@ -33,6 +35,13 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        StreamProvider<User?>(
+          create: (_) => FirebaseAuth.instance.authStateChanges(),
+          initialData: null,
+        ),
+        ProxyProvider<User?, ChatRepository>(
+          update: (_, user, _) => ChatRepository(user),
+        ),
         ChangeNotifierProvider(create: (_) => Userprovider(), lazy: false),
         ChangeNotifierProxyProvider<Userprovider, CartProvider>(
           create: (_) => CartProvider(null),
@@ -53,6 +62,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => Authprovider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => SearchUserProvider()),
       ],
 
       child: const MyApp(),

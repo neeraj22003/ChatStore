@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
+
 import 'package:flutter_experiments/features/search/data/search_dto.dart';
 
 class SummaryItemContainer extends StatelessWidget {

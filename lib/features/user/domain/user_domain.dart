@@ -4,26 +4,31 @@ class UserDomain {
   final String address;
   final String email;
   final String phone;
+  String chatroonmId;
+  String id;
   UserDomain({
     required this.profileimage,
     required this.name,
     required this.address,
     required this.email,
     required this.phone,
+    this.chatroonmId = '',
+    this.id = '',
   });
 
   factory UserDomain.fromJson(Map<String, dynamic> data) {
     return UserDomain(
-      profileimage: data['profileimage'],
+      profileimage: data['profileimage'] ?? '',
       name: data['name'],
-      address: data['address'],
-      email: data['email'],
-      phone: data['phone'],
+      address: data['address'] ?? '',
+      email: data['email'] ?? '',
+      phone: data['phone'] ?? '',
     );
   }
   Map<String, dynamic> toJson() {
     return {
       'query': name.toLowerCase().trim(),
+
       'profileimage': profileimage,
       'name': name,
       'address': address,

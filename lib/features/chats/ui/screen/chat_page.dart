@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
-import 'package:flutter_experiments/features/chats_history/ui/providers/privider.dart';
+import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatelessWidget {
@@ -21,8 +22,6 @@ class ChatPage extends StatelessWidget {
     required this.chatid,
     required this.isDesktop,
   });
-
-  
 
   Widget reactivebox(BuildContext context) {
     if (Platform.isAndroid || Platform.isIOS) {
@@ -91,8 +90,8 @@ class ChatPage extends StatelessWidget {
 
   Widget sender(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-    return Consumer<ChatProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<ChatProvider, Userprovider>(
+      builder: (context, provider, currentuser, child) {
         return Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
@@ -110,6 +109,8 @@ class ChatPage extends StatelessWidget {
                         secondguyname,
                         secondguyid,
                         chatid,
+                        provider.msgcontroller.text,
+                        currentuser.userDomain?.name ?? '',
                       ),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -124,6 +125,8 @@ class ChatPage extends StatelessWidget {
                   secondguyname,
                   secondguyid,
                   chatid,
+                  provider.msgcontroller.text,
+                  currentuser.userDomain?.name ?? '',
                 ),
 
                 icon: Icon(Icons.send_rounded, color: color.primary),

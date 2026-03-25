@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
 
 import 'package:flutter_experiments/features/chats/ui/screen/chat_page.dart';
-import 'package:flutter_experiments/features/chats_history/ui/providers/privider.dart';
+import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 import 'package:provider/provider.dart';
 
 class AdaptiveHistoryPage extends StatelessWidget {
@@ -20,16 +22,19 @@ class AdaptiveHistoryPage extends StatelessWidget {
           ),
           VerticalDivider(thickness: 2, width: 2),
           Consumer<ChatProvider>(
-            builder: (context, provider, child) => Expanded(
-              child: provider.id != null
-                  ? ChatPage(
-                      secondguyid: provider.id!,
-                      secondguyname: provider.title!,
-                      chatid: provider.chatid!,
-                      isDesktop: isdesktop,
-                    )
-                  : Center(child: Text('No chats')),
-            ),
+            builder: (context, provider, child) {
+              final chat = provider.chatuser;
+              return Expanded(
+                child: chat != null
+                    ? ChatPage(
+                        secondguyid: chat.id,
+                        secondguyname: chat.name,
+                        chatid: chat.chatroonmId,
+                        isDesktop: isdesktop,
+                      )
+                    : Center(child: Text('No chats')),
+              );
+            },
           ),
         ],
       );
@@ -41,19 +46,12 @@ class AdaptiveHistoryPage extends StatelessWidget {
 class HistoryChatPage extends StatelessWidget {
   final bool isdesktop;
   final double width;
+
   const HistoryChatPage({
     super.key,
     required this.isdesktop,
     required this.width,
   });
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> chatlist() {
-    final myId = FirebaseAuth.instance.currentUser!.uid;
-    return FirebaseFirestore.instance
-        .collection('messages')
-        .where('participants', arrayContains: myId)
-        .snapshots();
-  }
 
   Widget chatcard(
     BuildContext context,
@@ -70,11 +68,13 @@ class HistoryChatPage extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       clipBehavior: Clip.hardEdge,
-      color: provider.chatid == chatid ? color.surfaceContainerHighest : null,
+      color: provider.chatuser?.chatroonmId == chatid
+          ? color.surfaceContainerHighest
+          : null,
       child: InkWell(
         onTap: () {
           if (isdesktop) {
-            provider.addChatidTilereciverid(id, titl, chatid);
+            provider.getchatuser({'name': titl, 'id': id}, chatid, id);
           } else {
             Navigator.push(
               context,
@@ -117,7 +117,7 @@ class HistoryChatPage extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
 
     return StreamBuilder(
-      stream: chatlist(),
+      stream: ChatRepository(null).histchats(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           print('Error: ${snapshot.error}');
@@ -134,6 +134,7 @@ class HistoryChatPage extends StatelessWidget {
           itemCount: doc.length,
           itemBuilder: (context, index) {
             final data = doc[index].data();
+
             final isme = FirebaseAuth.instance.currentUser?.uid;
 
             final title = data['senderId'] == isme
