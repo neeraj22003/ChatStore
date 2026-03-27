@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 
 class ChatRepository {
   final User? currentuser;
   ChatRepository(this.currentuser);
+
   String getchatid(String secondguyid) {
     List<String> ids = [currentuser?.uid ?? '', secondguyid];
     ids.sort();
@@ -44,5 +46,27 @@ class ChatRepository {
         .collection('messages')
         .where('participants', arrayContains: currentuser?.uid)
         .snapshots();
+  }
+
+  Future<Map<String, UserDomain>> preloadchatuser(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> doc,
+  ) async {
+    final allids = [];
+    for (var i in doc) {
+      final participans = List<String>.from(i['participants'] ?? []);
+      allids.addAll(participans);
+    }
+
+    final docsquery = await FirebaseFirestore.instance
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: allids)
+        .get();
+    final result = <String, UserDomain>{};
+    for (var i in docsquery.docs) {
+      final users = UserDomain.fromJson(i.data());
+      users.id = i.id;
+      result[i.id] = users;
+    }
+    return result;
   }
 }

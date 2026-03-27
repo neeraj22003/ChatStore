@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
 import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 
 class ChatProvider extends ChangeNotifier {
-  UserDomain? _chatuser;
-  UserDomain? get chatuser => _chatuser;
+  Map<String, UserDomain>? _users;
+  Map<String, UserDomain>? get users => _users;
+  ChatDomain? _chat;
+  ChatDomain? get chat => _chat;
   final TextEditingController _msgController = TextEditingController();
   TextEditingController get msgcontroller => _msgController;
 
@@ -13,19 +18,21 @@ class ChatProvider extends ChangeNotifier {
   double? _firsttimewidth;
   double? get firstimewidth => _firsttimewidth;
 
-  Future<void> getchatuser(
-    Map<String, dynamic>? data,
-    String? chatid,
-    String id,
-  ) async {
+  Future<void> getchatuser(ChatDomain? data, String chatid) async {
     if (data != null) {
-      final fromjson = UserDomain.fromJson(data);
-      _chatuser = fromjson;
+      _chat = data;
     }
+    _chat?.chatroomid = chatid;
 
-    _chatuser?.id = id;
+    notifyListeners();
+  }
 
-    _chatuser?.chatroonmId = chatid ?? '';
+  Future<void> getuserprofile(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> doc,
+  ) async {
+    final userprofile = await ChatRepository(null).preloadchatuser(doc);
+    _users = userprofile;
+
     notifyListeners();
   }
 
