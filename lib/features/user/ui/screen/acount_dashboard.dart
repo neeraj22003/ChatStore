@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_experiments/features/user/ui/widget/unlink_button.dart';
 import 'package:provider/provider.dart';
 
 class AccountDashboard extends StatelessWidget {
@@ -11,7 +13,7 @@ class AccountDashboard extends StatelessWidget {
   Widget profileContainer(ColorScheme color, Userprovider userprovider) {
     final user = userprovider.userDomain;
     if (user == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SizedBox.shrink();
     }
     return Padding(
       padding: const EdgeInsets.only(bottom: 40),
@@ -25,26 +27,23 @@ class AccountDashboard extends StatelessWidget {
                 backgroundColor: color.primary,
                 child: CircleAvatar(
                   radius: 48,
-                  backgroundImage: user.profileimage != null
-                      ? NetworkImage(user.profileimage!)
-                      : AssetImage(
-                          'assets/app.png',
-                        ) /*(account.profileimage!=null &&account.profileimage!['image']!=null)? NetworkImage(account.currentUser!.photoURL??''):null*/,
+                  backgroundImage: user.profileimage == null
+                      ? AssetImage(ImageService.placeholder)
+                      : CachedNetworkImageProvider(user.profileimage!),
                 ),
               ),
-
               Flexible(
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
-                    user.name.isEmpty ? 'hb' : user.name,
+                    user.name.isEmpty ? 'user' : user.name,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
 
                   subtitle: Text(
-                    user.email.isEmpty ? 'njn' : user.email,
+                    user.email.isEmpty ? 'user' : user.email,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 15),
                     textAlign: TextAlign.center,
@@ -74,7 +73,7 @@ class AccountDashboard extends StatelessWidget {
     BuildContext context,
   ) {
     Widget leading() {
-      return Image.asset('assets/google.png', height: 40);
+      return Image.asset(ImageService.google, height: 40);
     }
 
     return Padding(
@@ -86,7 +85,9 @@ class AccountDashboard extends StatelessWidget {
         ),
         child: ListTile(
           onTap: () async {
-            await providr.linkwithGoogle();
+            if (!providr.islinked) {
+              await providr.linkwithGoogle();
+            }
           },
           contentPadding: const EdgeInsets.all(6),
           leading: Padding(padding: EdgeInsets.zero, child: leading()),
@@ -158,6 +159,8 @@ class AccountDashboard extends StatelessWidget {
                 googlelink(color, user, context),
                 const SizedBox(height: 30),
                 lougoutbutton(user, context),
+                const SizedBox(height: 30),
+                UnlinkButton(user: user),
               ],
             ),
           ),

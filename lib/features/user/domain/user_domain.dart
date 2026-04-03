@@ -1,25 +1,22 @@
 class UserDomain {
-  final String? profileimage;
+  String? profileimage;
   final String name;
   final String address;
   final String email;
   final String phone;
-  String chatroonmId;
-  String id;
+
   UserDomain({
     required this.profileimage,
     required this.name,
     required this.address,
     required this.email,
     required this.phone,
-    this.chatroonmId = '',
-    this.id = '',
   });
 
   factory UserDomain.fromJson(Map<String, dynamic> data) {
     return UserDomain(
-      profileimage: data['profileimage'] ?? '',
-      name: data['name'],
+      profileimage: data['profileimage'],
+      name: data['name'] ?? '',
       address: data['address'] ?? '',
       email: data['email'] ?? '',
       phone: data['phone'] ?? '',

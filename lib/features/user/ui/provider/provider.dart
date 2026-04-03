@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/features/user/data/google_auth_service.dart';
@@ -8,12 +9,10 @@ import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 class Userprovider extends ChangeNotifier {
   UserDomain? _userDomain;
   UserDomain? get userDomain => _userDomain;
-
+  bool _loading = false;
+  bool get loading => _loading;
+  String? get userId => FirebaseAuth.instance.currentUser?.uid;
   Userprovider() {
-    final initialuser = FirebaseAuth.instance.currentUser;
-    if (initialuser != null) {
-      loaduser(initialuser.uid);
-    }
     FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user != null && user.emailVerified) {
         loaduser(user.uid);
@@ -21,6 +20,7 @@ class Userprovider extends ChangeNotifier {
       notifyListeners();
     });
   }
+
   void logout() async {
     _userDomain = null;
     notifyListeners();
@@ -30,13 +30,34 @@ class Userprovider extends ChangeNotifier {
   }
 
   bool get islinked {
-    return userDomain?.profileimage != null;
+    final user = FirebaseAuth.instance.currentUser;
+
+    return user?.providerData.any(
+          (provider) => provider.providerId == ('google.com'),
+        ) ??
+        false;
   }
 
   Future<void> linkwithGoogle() async {
     final googleservice = GoogleAuthservice();
     await googleservice.linkwithhgoogle();
+    await loaduser(userId!);
     notifyListeners();
+  }
+
+  Future<void> unlink() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && islinked) {
+      _loading = true;
+      notifyListeners();
+      await user.unlink('google.com');
+
+      final google = GoogleAuthservice();
+      await google.google.signOut();
+      await loaduser(user.uid);
+      _loading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> loaduser(String uid) async {
