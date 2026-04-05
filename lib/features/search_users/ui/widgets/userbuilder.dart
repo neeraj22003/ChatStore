@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
 import 'package:flutter_experiments/features/search_users/data/search_user_repository.dart';
 import 'package:flutter_experiments/features/search_users/ui/widgets/user_card.dart';
@@ -17,15 +18,23 @@ class Userbuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).colorScheme;
     if (query.isEmpty) {
       return Center(
         child: Center(
-          child: SizedBox(height: 100, child: Image.asset('assets/user.png')),
+          child: SizedBox(
+            height: 200,
+            child: Image.asset(
+              theme.brightness == Brightness.dark
+                  ? ImageService.searchUserdark
+                  : ImageService.searchUser,
+            ),
+          ),
         ),
       );
     }
     return FutureBuilder(
-      future: SearchUserRepository().searchUserFuture(query),
+      future: SearchUserRepository().searchUserFuture(query.toLowerCase()),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

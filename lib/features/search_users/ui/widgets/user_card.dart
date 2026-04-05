@@ -1,10 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
+import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
 import 'package:flutter_experiments/features/chats/ui/screen/chat_page.dart';
 import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/features/search_users/domain/searchuser_domain.dart';
 
 import 'package:provider/provider.dart';
 
@@ -40,14 +45,15 @@ class UserCard extends StatelessWidget {
         radius: width < 258 ? 17 : 26,
         child: CircleAvatar(
           radius: width < 258 ? 15 : 24,
-          backgroundImage: imageurl != null ? NetworkImage(imageurl) : null,
-          child: imageurl == null ? Icon(Icons.person, size: 30) : null,
+          backgroundImage: imageurl == null
+              ? AssetImage(ImageService.placeholder)
+              : CachedNetworkImageProvider(imageurl),
         ),
       ),
     );
   }
 
-  Widget heading(String name, String email) {
+  Widget heading(String name, String email, String? myid, ColorScheme color) {
     return Expanded(
       child: ListTile(
         contentPadding: EdgeInsets.only(left: 4, top: 1, bottom: 1),
@@ -57,7 +63,10 @@ class UserCard extends StatelessWidget {
             ? null
             : Padding(
                 padding: const EdgeInsets.only(right: 8, bottom: 2),
-                child: const Icon(Icons.chat),
+                child: Icon(
+                  Icons.chat,
+                  color: user.id == myid ? color.surfaceContainerHighest : null,
+                ),
               ),
       ),
     );
@@ -67,39 +76,49 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     final navigation = context.watch<NavigationProvider>();
-    final directuserdata = UserDomain.fromJson(
+    final me = FirebaseAuth.instance.currentUser?.uid;
+    final directuserdata = SearchuserDomain.fromJson(
       user.data() as Map<String, dynamic>,
     );
+    chatProvider.users?[directuserdata.id]?.profileimage =
+        directuserdata.profileimage;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () async {
-          final chatroomid = ChatRepository(null).getchatid(user.id);
-          await chatProvider.getchatuser(
-            user.data() as Map<String, dynamic>,
-            chatroomid,
-            user.id,
-          );
-          if (isdesktop) {
-            navigation.ontapbottom(2);
+          if (user.id == me) {
           } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatPage(
-                  secondguyid: user.id,
-                  secondguyname: directuserdata.name,
-                  chatid: directuserdata.chatroonmId,
-                  isDesktop: isdesktop,
-                ),
-              ),
+            final chatroomid = ChatRepository(
+              FirebaseAuth.instance.currentUser,
+            ).getchatid(user.id);
+            final chatDomain = ChatDomain(
+              userid: user.id,
+              username: directuserdata.name,
+              chatroomid: chatroomid,
             );
+            await chatProvider.getchatuser(chatDomain);
+            if (isdesktop) {
+              navigation.ontapbottom(2);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    secondguyid: user.id,
+                    secondguyname: directuserdata.name,
+                    chatid: chatroomid,
+                    isDesktop: isdesktop,
+                    profileimage: directuserdata.profileimage,
+                  ),
+                ),
+              );
+            }
           }
         },
         child: Row(
           children: [
             profile(directuserdata.profileimage, color),
-            heading(directuserdata.name, directuserdata.email),
+            heading(directuserdata.name, directuserdata.email, me, color),
           ],
         ),
       ),

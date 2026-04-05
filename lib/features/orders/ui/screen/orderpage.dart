@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/orders/ui/widgets/order_card.dart';
 import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,7 @@ class Orderpage extends StatelessWidget {
                 child: SizedBox(
                   height: 100,
                   width: 100,
-                  child: Image.asset('assets/noorders.png', fit: BoxFit.cover),
+                  child: Image.asset(ImageService.noOrders, fit: BoxFit.cover),
                 ),
               );
       },

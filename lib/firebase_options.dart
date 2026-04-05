@@ -64,8 +64,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '441564765916',
     projectId: 'flutter-experiment-a826a',
     storageBucket: 'flutter-experiment-a826a.firebasestorage.app',
-    androidClientId: '441564765916-4q0t55c0mb35h9qsv4ktke5ts0hkaheg.apps.googleusercontent.com',
-    iosClientId: '441564765916-gnimbc12ek0m2b61kel7llfeqdt1a8f6.apps.googleusercontent.com',
+    androidClientId:
+        '441564765916-4q0t55c0mb35h9qsv4ktke5ts0hkaheg.apps.googleusercontent.com',
+    iosClientId:
+        '441564765916-gnimbc12ek0m2b61kel7llfeqdt1a8f6.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterExperiments',
   );
 
@@ -75,8 +77,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '441564765916',
     projectId: 'flutter-experiment-a826a',
     storageBucket: 'flutter-experiment-a826a.firebasestorage.app',
-    androidClientId: '441564765916-4q0t55c0mb35h9qsv4ktke5ts0hkaheg.apps.googleusercontent.com',
-    iosClientId: '441564765916-gnimbc12ek0m2b61kel7llfeqdt1a8f6.apps.googleusercontent.com',
+    androidClientId:
+        '441564765916-4q0t55c0mb35h9qsv4ktke5ts0hkaheg.apps.googleusercontent.com',
+    iosClientId:
+        '441564765916-gnimbc12ek0m2b61kel7llfeqdt1a8f6.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterExperiments',
   );
 

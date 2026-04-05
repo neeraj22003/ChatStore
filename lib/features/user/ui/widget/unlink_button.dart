@@ -12,7 +12,7 @@ class UnlinkButton extends StatelessWidget {
             onPressed: () async {
               await user.unlink();
             },
-            child: const Text('unlink'),
+            child: const Text('Unlink'),
           );
   }
 }

@@ -2,9 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-//import 'package:flutter_experiments/auth/signup/verify_page.dart';
-
 import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
+
 import 'package:flutter_experiments/features/auth/ui/screen/login_page.dart';
 import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
 import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
@@ -31,6 +30,10 @@ Future<void> main() async {
   await dotenv.load(fileName: 'ebuy_token.env');
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null && !user.emailVerified) {
+    await FirebaseAuth.instance.signOut();
+  }
 
   runApp(
     MultiProvider(
@@ -45,13 +48,14 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => Userprovider(), lazy: false),
         ChangeNotifierProxyProvider<Userprovider, CartProvider>(
           create: (_) => CartProvider(null),
-          update: (context, user, previouscart) {
+          update: (context, user, cart) {
+            cart ??= CartProvider(user.userDomain);
+
+            cart.user = user.userDomain;
             if (user.userDomain != null) {
-              final cart = CartProvider(user.userDomain);
-              cart.loaditems();
-              return cart;
+              Future.microtask(() => cart?.init());
             }
-            return CartProvider(null);
+            return cart;
           },
         ),
         ChangeNotifierProvider(create: (_) => Appbarprovider()),

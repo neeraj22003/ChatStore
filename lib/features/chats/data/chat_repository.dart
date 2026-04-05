@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/features/search_users/domain/searchuser_domain.dart';
 
 class ChatRepository {
   final User? currentuser;
@@ -48,7 +48,7 @@ class ChatRepository {
         .snapshots();
   }
 
-  Future<Map<String, UserDomain>> preloadchatuser(
+  Future<Map<String, SearchuserDomain>> preloadchatuser(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> doc,
   ) async {
     final allids = [];
@@ -61,9 +61,9 @@ class ChatRepository {
         .collection('users')
         .where(FieldPath.documentId, whereIn: allids)
         .get();
-    final result = <String, UserDomain>{};
+    final result = <String, SearchuserDomain>{};
     for (var i in docsquery.docs) {
-      final users = UserDomain.fromJson(i.data());
+      final users = SearchuserDomain.fromJson(i.data());
       users.id = i.id;
       result[i.id] = users;
     }

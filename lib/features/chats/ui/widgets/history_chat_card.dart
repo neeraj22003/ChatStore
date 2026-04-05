@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
 import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
 import 'package:flutter_experiments/features/chats/ui/screen/chat_page.dart';
@@ -11,26 +11,18 @@ class HistoryChatCard extends StatelessWidget {
   final ChatDomain chatDomain;
   final String chatid;
   final bool isdesktop;
-  final String? otherid;
 
   const HistoryChatCard({
     super.key,
     required this.chatDomain,
     required this.chatid,
     required this.isdesktop,
-    required this.otherid,
   });
-  String? title(String isme) {
-    return chatDomain.senderId == isme
-        ? chatDomain.receiver
-        : chatDomain.sender;
-  }
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-    final isme = FirebaseAuth.instance.currentUser?.uid;
-
+    final userid = chatDomain.userid;
     return Consumer<ChatProvider>(
       builder: (context, provider, child) {
         return Material(
@@ -44,17 +36,19 @@ class HistoryChatCard extends StatelessWidget {
           child: InkWell(
             onTap: () {
               if (isdesktop) {
-                provider.getchatuser(chatDomain, chatid);
+                chatDomain.chatroomid = chatid;
+
+                provider.getchatuser(chatDomain);
               } else {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChatPage(
-                      secondguyid: chatDomain.receiverId,
-                      secondguyname: title(isme ?? ''),
+                      secondguyid: userid,
+                      secondguyname: provider.users?[userid]?.name,
                       chatid: chatid,
                       isDesktop: isdesktop,
-                      chatprovider: provider,
+                      profileimage: provider.users?[userid]?.profileimage,
                     ),
                   ),
                 );
@@ -70,15 +64,18 @@ class HistoryChatCard extends StatelessWidget {
                     radius: 27,
                     child: CircleAvatar(
                       radius: 25,
-                      backgroundImage: CachedNetworkImageProvider(
-                        provider.users?[otherid]?.profileimage ?? '',
-                      ),
+                      backgroundImage:
+                          provider.users?[userid]?.profileimage != null
+                          ? CachedNetworkImageProvider(
+                              provider.users?[userid]?.profileimage ?? '',
+                            )
+                          : AssetImage(ImageService.placeholder),
                     ),
                   ),
                 ),
                 Expanded(
                   child: ListTile(
-                    title: Text(title(isme ?? '') ?? ''),
+                    title: Text(provider.users?[userid]?.name ?? ''),
                     subtitle: Text(chatDomain.lastmessage ?? ''),
                   ),
                 ),

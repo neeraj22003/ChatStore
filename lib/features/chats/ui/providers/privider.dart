@@ -3,11 +3,11 @@ import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/features/search_users/domain/searchuser_domain.dart';
 
 class ChatProvider extends ChangeNotifier {
-  Map<String, UserDomain>? _users;
-  Map<String, UserDomain>? get users => _users;
+  Map<String, SearchuserDomain>? _users;
+  Map<String, SearchuserDomain>? get users => _users;
   ChatDomain? _chat;
   ChatDomain? get chat => _chat;
   final TextEditingController _msgController = TextEditingController();
@@ -18,11 +18,10 @@ class ChatProvider extends ChangeNotifier {
   double? _firsttimewidth;
   double? get firstimewidth => _firsttimewidth;
 
-  Future<void> getchatuser(ChatDomain? data, String chatid) async {
+  Future<void> getchatuser(ChatDomain? data) async {
     if (data != null) {
       _chat = data;
     }
-    _chat?.chatroomid = chatid;
 
     notifyListeners();
   }

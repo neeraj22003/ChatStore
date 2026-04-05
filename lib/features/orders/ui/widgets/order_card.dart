@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
 
 import 'package:flutter_experiments/features/orders/ui/screen/order_summary.dart';
@@ -14,7 +15,11 @@ class OrderCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8, top: 8),
       child: Row(
         children: [
-          SizedBox(height: 20, width: 20, child: Image.asset('assets/app.png')),
+          SizedBox(
+            height: 20,
+            width: 20,
+            child: Image.asset(ImageService.appImage),
+          ),
           const SizedBox(width: 5),
           Text(
             'Store',

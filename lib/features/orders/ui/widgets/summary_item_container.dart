@@ -26,7 +26,7 @@ class SummaryItemContainer extends StatelessWidget {
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
         ),
         trailing: Text(
-          '₹${item.inrprice * item.quantity}',
+          '₹${(item.inrprice * item.quantity).toStringAsFixed(1)}',
           style: TextStyle(fontSize: 15),
         ),
       ),

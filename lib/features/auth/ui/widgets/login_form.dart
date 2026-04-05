@@ -1,163 +1,127 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 
 import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
 import 'package:flutter_experiments/features/auth/ui/screen/signup_page.dart';
+import 'package:flutter_experiments/features/auth/ui/widgets/custom_field.dart';
 
 import 'package:provider/provider.dart';
 
-class LoginForm extends StatelessWidget{
-  
-const  LoginForm({super.key});
-  
-  Widget smallimage(){
+class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final _formkey = GlobalKey<FormState>();
+  String? email, password;
+  bool obscure = false;
+  Widget smallimage() {
     return SizedBox(
       height: 250,
-      child: Center(
-        child: Image.asset('assets/login.png'),
-      )
-    );
-  }
-  OutlineInputBorder normalborder() {
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.blue, width: 1.2),
-      borderRadius: const BorderRadius.all(Radius.circular(15)),
+      child: Center(child: Image.asset(ImageService.login)),
     );
   }
 
-  OutlineInputBorder errorborder() {
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red, width: 1.2),
-      borderRadius: const BorderRadius.all(Radius.circular(15)),
+  Widget userfield() {
+    return CustomField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'field are empty';
+        }
+        final emailformat = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+        if (!emailformat.hasMatch(value)) {
+          return 'enter valid email';
+        }
+        return null;
+      },
+      onSaved: (p0) => email = p0,
+
+      textInputAction: TextInputAction.next,
+      hintext: 'Email@',
     );
   }
-  Widget userfield(Authprovider provider){
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-      
-        validator: (value) {
-        
-          if(value!.isEmpty){
-            return 'field are empty';
-          }
-          final emailformat=RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-          if(!emailformat.hasMatch(value)){
-            return 'enter valid email';
-          }
-          return null;
+
+  Widget passwordfield(Authprovider provider) {
+    return CustomField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter password';
+        }
+        return null;
+      },
+      obscureText: obscure,
+      suffixicon: IconButton(
+        onPressed: () {
+          setState(() {
+            obscure = !obscure;
+          });
         },
-        controller: provider.namecontroller,
-         textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-       hintText: 'Email@',
-         border: InputBorder.none,
-         
-         focusedErrorBorder: errorborder(),
-         errorBorder: errorborder(),
-          enabledBorder:normalborder(),
-          focusedBorder: normalborder()
-        )
+        icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
       ),
+      textInputAction: TextInputAction.done,
+      hintext: 'Password',
+      onSaved: (p0) => password = p0,
+      onfieldsubmitted: (value) {
+        if (_formkey.currentState!.validate()) {
+          _formkey.currentState!.save();
+          provider.login(email!, password!);
+        }
+      },
     );
   }
 
-  Widget passwordfield(BuildContext context,Authprovider auth){
-    return Padding(padding:const EdgeInsets.only(
-      top: 8,bottom: 16,left: 8,right: 8,
-      ),
-      child: TextFormField  (
-        validator: (value) {
-          if(value!.isEmpty){
-            return 'Please enter password';
-          }
-          return null;
-        },
-        controller: auth.passwordcontroller,
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: (value)=>_login(auth,context),
-       decoration: InputDecoration(
-        hintText: 'Password',
-        focusedErrorBorder: errorborder(),
-         errorBorder: errorborder(),
-          enabledBorder:normalborder(),
-          focusedBorder: normalborder()
-      ),
-     ),
-    );
-  }
-  Widget loginbutton(Authprovider auth,BuildContext context){
-    return ElevatedButton(onPressed: (){
-      _login(auth, context);
-     
-       
-        
-      
-    },
-      
-    
-     child: Text('Login')
-    );
-  
-  
-  }
-  Future<void> _login(Authprovider auth,BuildContext context)async{
-  
-  if(auth.formkey.currentState!.validate()){
-    auth.loding();
-  
-   final error= await  auth.login(auth.namecontroller.text.trim(),auth.passwordcontroller.text.trim());
-   
-    if(error!=null){
-      auth.stoploading();
-    await  Future.delayed(const Duration(milliseconds: 200),);
-    
-        auth.snacbarkey.currentState?.showSnackBar(
-          SnackBar(content: Text(error),
-          backgroundColor: const Color.fromARGB(255, 144, 25, 66),
-          ),
-         
-        );
-      }else{
-
-      }}
-      
-  }
-  Widget signupbutton(BuildContext context){
+  Widget loginbutton(Authprovider provider) {
     return ElevatedButton(
-      onPressed: (){
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context)=>SignupPage())
-         );
+      onPressed: () {
+        if (_formkey.currentState!.validate()) {
+          _formkey.currentState!.save();
+          provider.login(email!, password!);
+        }
+      },
 
-    }, child: Text('Sign Up')
+      child: Text('Login'),
     );
   }
- 
- @override
+
+  Widget signupbutton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignupPage()),
+        );
+      },
+      child: Text('Sign Up'),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<Authprovider>(
-      builder:(context,auth,child){
-       return Scaffold(
-        body: SingleChildScrollView(
-          child: 
-          Form(key:auth.formkey ,
-            child:
-           Column(
-         children: [
-          const SizedBox(height: 50,),
-          smallimage(),
-         userfield(auth),
-         passwordfield(context,auth),
-         loginbutton(auth,context),
-         const SizedBox(height: 10,),
-         signupbutton(context),
-          const SizedBox(height: 20,),
-          
-        ])
-      ),)
+      builder: (context, auth, child) {
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: Form(
+              key: _formkey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 50),
+                  smallimage(),
+                  userfield(),
+                  passwordfield(auth),
+                  loginbutton(auth),
+                  const SizedBox(height: 10),
+                  signupbutton(context),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
-   }
-  );
- }
+  }
 }

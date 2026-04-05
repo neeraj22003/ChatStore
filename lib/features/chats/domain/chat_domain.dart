@@ -1,19 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatDomain {
-  final String? sender;
-  final String? receiver;
-  final String? senderId;
-  final String? receiverId;
   final String? lastmessage;
   final DateTime? timestamp;
   String? chatroomid;
+  String username;
+  String userid;
   final List<String>? participants;
   ChatDomain({
-    this.sender,
-    this.receiver,
-    this.senderId,
-    this.receiverId,
+    this.userid = '',
+    this.username = '',
     this.lastmessage,
     this.timestamp,
     this.chatroomid,
@@ -22,11 +18,7 @@ class ChatDomain {
 
   factory ChatDomain.fromJson(Map<String, dynamic> data) {
     return ChatDomain(
-      sender: data['sender'] ?? '',
-      receiver: data['receiver'] ?? '',
-      senderId: data['senderId'] ?? '',
-      receiverId: data['receiverId'] ?? '',
-      lastmessage: data['lastmessage'] ?? '',
+      lastmessage: data['lastMessage'] ?? '',
       timestamp: ((data['timestamp'] ?? Timestamp.now()).toDate()),
       chatroomid: data['chatroomid'] ?? '',
       participants: List<String>.from(data['participants'] ?? []),

@@ -15,7 +15,7 @@ import 'package:flutter_experiments/features/search/domain/search_item_domain.da
 import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 
 class CartProvider extends ChangeNotifier {
-  final UserDomain? user;
+  UserDomain? user;
   CartProvider(this.user);
   Map<String, SearchDomain> _cartitems = {};
   Map<String, SearchDomain> get cartitem => _cartitems;
@@ -25,9 +25,9 @@ class CartProvider extends ChangeNotifier {
   bool _isloading = false;
   bool get isloading => _isloading;
   Timer? _timer;
-  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  String? get userId => FirebaseAuth.instance.currentUser?.uid;
 
-  Future<void> init() async {
+  void init() async {
     await loaditems();
   }
 
@@ -69,8 +69,8 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<void> loaditems() async {
-    if (userId != null) return;
     final item = await CartRepository().loaditems(userId);
+
     _cartitems = Map.fromEntries(
       item.map((data) {
         return MapEntry(data.itemId, data);
@@ -89,7 +89,7 @@ class CartProvider extends ChangeNotifier {
         orderId: '',
         name: user?.name ?? '',
         phone: user?.phone ?? '',
-        address: user?.address ?? "",
+        address: selectedlocation ?? user?.address ?? "",
         total: total,
         items: itemlist,
       );

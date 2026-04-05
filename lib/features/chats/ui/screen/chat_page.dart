@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+import 'package:flutter_experiments/core/services/images.dart';
 
 import 'package:flutter_experiments/features/chats/ui/widgets/chat_bubble.dart';
 import 'package:flutter_experiments/features/chats/ui/widgets/sender_row.dart';
@@ -18,14 +18,14 @@ class ChatPage extends StatelessWidget {
   final String? secondguyname;
   final String? chatid;
   final bool isDesktop;
-  final ChatProvider chatprovider;
+  final String? profileimage;
   const ChatPage({
     super.key,
     required this.secondguyid,
     required this.secondguyname,
     required this.chatid,
     required this.isDesktop,
-    required this.chatprovider,
+    required this.profileimage,
   });
 
   Widget reactivebox(BuildContext context) {
@@ -74,9 +74,9 @@ class ChatPage extends StatelessWidget {
         radius: 27,
         child: CircleAvatar(
           radius: 23,
-          backgroundImage: CachedNetworkImageProvider(
-            chatprovider.users?[secondguyid]?.profileimage ?? '',
-          ),
+          backgroundImage: profileimage != null
+              ? CachedNetworkImageProvider(profileimage!)
+              : AssetImage(ImageService.placeholder),
         ),
       ),
     );
@@ -141,7 +141,7 @@ class ChatPage extends StatelessWidget {
                   color.surface,
                   BlendMode.multiply,
                 ),
-                image: AssetImage('assets/bg.jpg'),
+                image: AssetImage(ImageService.chatBg),
               ),
             ),
             child: Column(

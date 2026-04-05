@@ -29,11 +29,12 @@ class AdaptiveHistoryPage extends StatelessWidget {
               return Expanded(
                 child: chat != null
                     ? ChatPage(
-                        secondguyid: chat.receiverId,
-                        secondguyname: chat.receiver,
+                        secondguyid: chat.userid,
+                        secondguyname: provider.users?[chat.userid]?.name,
                         chatid: chat.chatroomid,
                         isDesktop: isdesktop,
-                        chatprovider: provider,
+                        profileimage:
+                            provider.users?[chat.userid]?.profileimage,
                       )
                     : Center(child: Text('No chats')),
               );
@@ -59,7 +60,7 @@ class HistoryChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: ChatRepository(null).histchats(),
+      stream: ChatRepository(FirebaseAuth.instance.currentUser).histchats(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           print('Error: ${snapshot.error}');
@@ -71,28 +72,26 @@ class HistoryChatPage extends StatelessWidget {
           return const Center(child: Text('No Messages Yet'));
         }
         final doc = snapshot.data!.docs;
-        Provider.of<ChatProvider>(context).getuserprofile(doc);
-        final myid = FirebaseAuth.instance.currentUser?.uid;
+        Provider.of<ChatProvider>(context, listen: true).getuserprofile(doc);
+
         return ListView.builder(
           padding: const EdgeInsets.all(6),
           itemCount: doc.length,
           itemBuilder: (context, index) {
             final data = doc[index].data();
             final chatDomain = ChatDomain.fromJson(data);
-            final otherids = chatDomain.participants?.length == 1
-                ? myid
-                : chatDomain.participants?.firstWhere(
-                    (id) => id != myid,
-                    orElse: () => myid!,
-                  );
-
+            final myid = FirebaseAuth.instance.currentUser?.uid;
+            final userid = chatDomain.participants?.firstWhere(
+              (id) => id != myid,
+              orElse: () => '',
+            );
+            chatDomain.userid = userid ?? '';
             final chatid = doc[index].id;
 
             return HistoryChatCard(
               chatDomain: chatDomain,
               chatid: chatid,
               isdesktop: isdesktop,
-              otherid: otherids,
             );
           },
         );
