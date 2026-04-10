@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/cart/data/location_service.dart';
 import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
-import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class LocationbottomSheet extends StatelessWidget {
@@ -32,7 +30,6 @@ class LocationbottomSheet extends StatelessWidget {
         ),
 
         onTap: () {
-          cart.loadingsetter();
           function();
           Navigator.pop(context);
         },
@@ -43,9 +40,7 @@ class LocationbottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<CartProvider>();
-    final user = context.read<Userprovider>().userDomain;
-
-    String? addreschecker;
+    final user = provider.user;
 
     return Wrap(
       children: [
@@ -54,13 +49,9 @@ class LocationbottomSheet extends StatelessWidget {
           Icon(Icons.location_on),
           context,
           () async {
-            String? address = await LocationService().fetcher(provider);
-            if (address != null) {
-              addreschecker = address;
-              provider.onselectedlocation(address);
-            }
+            provider.onselectedlocation(provider.current);
           },
-          addreschecker,
+          provider.current,
           provider,
         ),
 
@@ -72,6 +63,7 @@ class LocationbottomSheet extends StatelessWidget {
           user?.address ?? 'Default Address',
           provider,
         ),
+        const SizedBox(height: 140),
       ],
     );
   }

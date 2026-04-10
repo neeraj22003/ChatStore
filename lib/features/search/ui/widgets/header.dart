@@ -16,8 +16,9 @@ class Header extends StatelessWidget {
             bottomLeft: Radius.circular(7),
           ),
           image: DecorationImage(
+            repeat: ImageRepeat.repeat,
+
             //colorFilter:ColorFilter.mode(Colors.pink, BlendMode.color) ,
-            fit: BoxFit.cover,
             image: AssetImage(ImageService.header),
           ),
         ),

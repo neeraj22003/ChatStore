@@ -62,9 +62,7 @@ class HistoryChatPage extends StatelessWidget {
     return StreamBuilder(
       stream: ChatRepository(FirebaseAuth.instance.currentUser).histchats(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          print('Error: ${snapshot.error}');
-        }
+        if (snapshot.hasError) {}
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }

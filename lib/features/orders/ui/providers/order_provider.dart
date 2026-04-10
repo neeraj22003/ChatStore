@@ -15,7 +15,7 @@ class OrderProvider extends ChangeNotifier {
   }
 
   void addoder(Orders order) {
-    _orders.add(order);
+    _orders = [order, ..._orders];
     notifyListeners();
   }
 

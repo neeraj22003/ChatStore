@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
 import 'package:flutter_experiments/features/auth/ui/widgets/custom_field.dart';
+import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -121,7 +123,11 @@ class _SignupFormState extends State<SignupForm> {
     );
   }
 
-  Widget phone(Authprovider auth, BuildContext context) {
+  Widget phone(
+    Authprovider auth,
+    Userprovider userprovider,
+    BuildContext context,
+  ) {
     return CustomField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -139,21 +145,40 @@ class _SignupFormState extends State<SignupForm> {
         if (_formkey.currentState!.validate()) {
           _formkey.currentState!.save();
           _loading = true;
-          auth.getsavingdata(_name, _email, _address, _phone);
-
+          final user = UserDomain(
+            profileimage: null,
+            name: _name!,
+            address: _address!,
+            email: _email!,
+            phone: _phone!,
+          );
+          auth.getuserdata(user);
+        
           await auth.signUp(_email ?? '', _password ?? '', context);
         }
       },
     );
   }
 
-  Widget signupbutton(BuildContext context, Authprovider auth) {
+  Widget signupbutton(
+    BuildContext context,
+    Authprovider auth,
+    Userprovider userprovider,
+  ) {
     return ElevatedButton(
       onPressed: () async {
         if (_formkey.currentState!.validate()) {
           _formkey.currentState!.save();
           _loading = true;
-          auth.getsavingdata(_name, _email, _address, _phone);
+          final user = UserDomain(
+            profileimage: null,
+            name: _name!,
+            address: _address!,
+            email: _email!,
+            phone: _phone!,
+          );
+          auth.getuserdata(user);
+         
           auth.signUp(_email ?? '', _password ?? '', context);
         }
       },
@@ -164,8 +189,8 @@ class _SignupFormState extends State<SignupForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Authprovider>(
-      builder: (context, auth, child) {
+    return Consumer2<Authprovider, Userprovider>(
+      builder: (context, auth, user, child) {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -186,10 +211,10 @@ class _SignupFormState extends State<SignupForm> {
                   password(),
 
                   address(),
-                  phone(auth, context),
+                  phone(auth, user, context),
                   _loading
                       ? CircularProgressIndicator()
-                      : signupbutton(context, auth),
+                      : signupbutton(context, auth, user),
                   const SizedBox(height: 20),
                 ],
               ),

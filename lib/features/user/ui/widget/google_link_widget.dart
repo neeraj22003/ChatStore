@@ -8,7 +8,12 @@ class GoogleLinkWidget extends StatelessWidget {
   const GoogleLinkWidget({super.key, required this.provider});
 
   Widget leading() {
-    return Image.asset(ImageService.google, height: 40);
+    return Image.asset(
+      ImageService.google,
+      height: 40,
+      cacheHeight: 100,
+      cacheWidth: 100,
+    );
   }
 
   Widget title() {

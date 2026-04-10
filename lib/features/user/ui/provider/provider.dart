@@ -13,11 +13,16 @@ class Userprovider extends ChangeNotifier {
   String? get userId => FirebaseAuth.instance.currentUser?.uid;
   Userprovider() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user != null && user.emailVerified) {
+      if (user != null) {
         loaduser(user.uid);
       }
       notifyListeners();
     });
+  }
+
+  void loaduserfirstime(UserDomain user) {
+    _userDomain = user;
+    notifyListeners();
   }
 
   void logout() async {
@@ -40,7 +45,7 @@ class Userprovider extends ChangeNotifier {
   Future<void> linkwithGoogle() async {
     final googleservice = GoogleAuthservice();
     await googleservice.linkwithhgoogle();
-    await loaduser(userId!);
+    await loaduser(userId ?? '');
     notifyListeners();
   }
 

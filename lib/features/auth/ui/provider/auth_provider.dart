@@ -7,6 +7,7 @@ import 'package:flutter_experiments/features/auth/data/auth_repository.dart';
 import 'package:flutter_experiments/features/auth/ui/screen/verify_page.dart';
 import 'package:flutter_experiments/features/user/data/user_repository.dart';
 import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
 
 class Authprovider extends ChangeNotifier {
   final GlobalKey<ScaffoldMessengerState> _snackbarKey =
@@ -21,26 +22,19 @@ class Authprovider extends ChangeNotifier {
   bool get loading => _loading;
   Timer? _timer;
   // ignore: unused_field
-  String? _name, _email, _address, _phone;
-  String? get email => _email;
-  void getsavingdata(
-    String? name,
-    String? email,
-    String? address,
-    String? phone,
-  ) {
-    _name = name;
-    _email = email;
-    _address = address;
-    _phone = phone;
+  UserDomain? _user;
+  UserDomain? get user => _user;
+
+  void getuserdata(UserDomain user) {
+    _user = user;
     notifyListeners();
   }
 
-  void startVerificationPolling() {
+  void startVerificationPolling(Userprovider userprovider) {
     if (_timer != null) return;
 
     _timer = Timer.periodic(const Duration(seconds: 3), (_) async {
-      await checkverification();
+      await checkverification(userprovider);
       if (_isverified) stopVerificationPolling();
     });
   }
@@ -60,19 +54,13 @@ class Authprovider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkverification() async {
+  Future<void> checkverification(Userprovider userprovider) async {
     final user = FirebaseAuth.instance.currentUser;
     await user?.reload();
     _isverified = user?.emailVerified ?? false;
     if (_isverified) {
-      final userdata = UserDomain(
-        profileimage: null,
-        name: _name ?? '',
-        address: _address ?? '',
-        email: _email ?? '',
-        phone: _phone ?? '',
-      );
-      UserRepository.saveUser(userdata, user!.uid);
+      await UserRepository.saveUser(_user!, user!.uid);
+      await userprovider.loaduser(user.uid);
     }
     notifyListeners();
   }

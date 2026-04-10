@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_experiments/features/cart/data/cart_repository.dart';
+import 'package:flutter_experiments/features/cart/data/location_service.dart';
 import 'package:flutter_experiments/features/orders/data/orders_repositry.dart';
 import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
 
@@ -17,6 +18,7 @@ import 'package:flutter_experiments/features/user/domain/user_domain.dart';
 class CartProvider extends ChangeNotifier {
   UserDomain? user;
   CartProvider(this.user);
+
   Map<String, SearchDomain> _cartitems = {};
   Map<String, SearchDomain> get cartitem => _cartitems;
 
@@ -24,27 +26,34 @@ class CartProvider extends ChangeNotifier {
   String? get selectedlocation => _selectedlocation;
   bool _isloading = false;
   bool get isloading => _isloading;
-  Timer? _timer;
+  String? _current;
+  String? get current => _current;
+
   String? get userId => FirebaseAuth.instance.currentUser?.uid;
 
   void init() async {
     await loaditems();
+    injectuseraddress();
   }
 
-  void onselectedlocation(String location) {
-    //this funcytion
-    _selectedlocation = location;
-    notifyListeners();
+  void injectuseraddress() {
+    _selectedlocation = user?.address;
   }
 
-  void loadingsetter() {
-    _timer?.cancel();
-    _isloading = true;
-    notifyListeners();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+  void onselectedlocation(String? location) async {
+    if (location == null) {
+      _isloading = true;
+      notifyListeners();
+      final loc = await LocationService().fetcher();
+      _selectedlocation = loc;
+      _current = loc;
       _isloading = false;
       notifyListeners();
-    });
+    }
+    if (location != null) {
+      _selectedlocation = location;
+    }
+    notifyListeners();
   }
 
   void additem(SearchDomain item) async {
@@ -73,6 +82,7 @@ class CartProvider extends ChangeNotifier {
 
     _cartitems = Map.fromEntries(
       item.map((data) {
+        SearchRepo().addcacheitem(data.itemId, data);
         return MapEntry(data.itemId, data);
       }),
     );

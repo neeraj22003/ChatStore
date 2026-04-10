@@ -17,40 +17,44 @@ class ItemLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<SearchbarProvider>();
-    return FutureBuilder(
-      future: SearchRepo().searchItems(provider.controller.text.trim()),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            provider.controller.text.isNotEmpty) {
-          return const SliverToBoxAdapter(
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return SliverToBoxAdapter(
-            child: Center(child: Text(snapshot.error.toString())),
-          );
-        }
-        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-          final item = snapshot.data!;
-
-          return SliverPadding(
-            padding: const EdgeInsets.only(left: 4, right: 4),
-            sliver: ItemsList(results: item),
-          );
-        }
-
-        return SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 50),
+    return provider.controller.text.isEmpty
+        ? SliverToBoxAdapter(
             child: Center(
-              child: Image.asset(scale: 2.5, ImageService.searchItembG),
+              child: Image.asset(scale: 3.5, ImageService.searchItembG),
             ),
-          ),
-        );
-      },
-    );
+          )
+        : FutureBuilder(
+            future: SearchRepo().searchItems(provider.controller.text.trim()),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  provider.controller.text.isNotEmpty) {
+                return const SliverToBoxAdapter(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return SliverToBoxAdapter(
+                  child: Center(child: Text(snapshot.error.toString())),
+                );
+              }
+              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                final item = snapshot.data!;
+
+                return SliverPadding(
+                  padding: const EdgeInsets.only(left: 4, right: 4),
+                  sliver: ItemsList(results: item),
+                );
+              }
+
+              return SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Center(child: Text('No item found')),
+                ),
+              );
+            },
+          );
   }
 }
 

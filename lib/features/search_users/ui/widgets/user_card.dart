@@ -100,18 +100,20 @@ class UserCard extends StatelessWidget {
             if (isdesktop) {
               navigation.ontapbottom(2);
             } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                    secondguyid: user.id,
-                    secondguyname: directuserdata.name,
-                    chatid: chatroomid,
-                    isDesktop: isdesktop,
-                    profileimage: directuserdata.profileimage,
+              if (context.mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(
+                      secondguyid: user.id,
+                      secondguyname: directuserdata.name,
+                      chatid: chatroomid,
+                      isDesktop: isdesktop,
+                      profileimage: directuserdata.profileimage,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             }
           }
         },

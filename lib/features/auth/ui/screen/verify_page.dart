@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/services/images.dart';
 import 'package:flutter_experiments/features/auth/data/auth_repository.dart';
 import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
+import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -17,13 +18,16 @@ class _VerifyPageState extends State<VerifyPage> {
   @override
   void initState() {
     super.initState();
-    context.read<Authprovider>().startVerificationPolling();
+
+    context.read<Authprovider>().startVerificationPolling(
+      context.read<Userprovider>(),
+    );
   }
 
   Widget message(BuildContext context) {
-    final userEmail = context.read<Authprovider>();
+    final user = context.read<Authprovider>();
     return Text(
-      'We’ve sent a verification link to your email ${userEmail.email}. '
+      'We’ve sent a verification link to your email ${user.user?.email}. '
       'Please check your inbox or "spam" folder and verify before continuing.',
       style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
     );

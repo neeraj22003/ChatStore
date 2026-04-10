@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/search/data/search_repo.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
 
 class BottomsheetProvider extends ChangeNotifier {
   static final Map<String, int?> _quantity = {};
@@ -40,9 +38,5 @@ class BottomsheetProvider extends ChangeNotifier {
   void onpress() {
     _expanded == false ? _expanded = true : _expanded = false;
     notifyListeners();
-  }
-
-  void addcache(String key, SearchDomain item) {
-    SearchRepo().addcacheitem(key, item);
   }
 }

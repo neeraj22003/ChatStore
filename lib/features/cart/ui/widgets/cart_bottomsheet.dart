@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_experiments/features/cart/ui/widgets/location_sheet.dart';
 
 import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
@@ -37,20 +38,21 @@ class CartBottomSheet extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          TextButton(
-            onPressed: () {
-              locationsheet(context);
-            },
-            child: cart.isloading
-                ? CircularProgressIndicator()
-                : Text(
+
+          cart.isloading
+              ? const CircularProgressIndicator()
+              : TextButton(
+                  onPressed: () {
+                    locationsheet(context);
+                  },
+                  child: Text(
                     'Change',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: media.size.width < 224 ? 10 : 12,
                     ),
                   ),
-          ),
+                ),
         ],
       ),
     );
@@ -129,7 +131,7 @@ class CartBottomSheet extends StatelessWidget {
     return Consumer3<CartProvider, OrderProvider, NavigationProvider>(
       builder: (context, provider, order, navigation, child) {
         return Container(
-          height: 170,
+          height: 190,
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -148,7 +150,7 @@ class CartBottomSheet extends StatelessWidget {
               sheetheading(media, provider, context),
 
               rowitem(provider, theme, media, context, navigation),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
             ],
           ),
         );

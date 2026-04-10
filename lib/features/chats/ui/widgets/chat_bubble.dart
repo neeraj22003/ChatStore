@@ -12,14 +12,15 @@ class ChatBubble extends StatelessWidget {
       alignment: me ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-        child: Material(
-          elevation: 4,
+        child: Card(
           color: me ? Color(0xFFD1E4FF) : color.surfaceBright,
-          borderRadius: BorderRadius.only(
-            topLeft: me ? const Radius.circular(8) : Radius.zero,
-            topRight: me ? Radius.zero : const Radius.circular(8),
-            bottomLeft: const Radius.circular(8),
-            bottomRight: const Radius.circular(8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: me ? const Radius.circular(8) : Radius.zero,
+              topRight: me ? Radius.zero : const Radius.circular(8),
+              bottomLeft: const Radius.circular(8),
+              bottomRight: const Radius.circular(8),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),

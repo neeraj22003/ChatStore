@@ -36,7 +36,12 @@ class SearchRepo {
     } else {
       final raw = await _dataSource.itemDetails(itemId);
       if (raw == null) return null;
+
       final inrate = await _currencyservice.getrate();
+      addcacheitem(
+        itemId,
+        SearchDomain.fromdetaildto(EbuyItemsDetails.fromjson(raw), inrate),
+      );
       return SearchDomain.fromdetaildto(EbuyItemsDetails.fromjson(raw), inrate);
     }
   }

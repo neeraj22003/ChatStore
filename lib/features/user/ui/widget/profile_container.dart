@@ -31,14 +31,14 @@ class ProfileContainer extends StatelessWidget {
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
-                    user!.name.isEmpty ? 'user' : user!.name,
+                    user?.name ?? 'user',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
 
                   subtitle: Text(
-                    user!.email.isEmpty ? 'user' : user!.email,
+                    user?.email ?? 'email',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 15),
                     textAlign: TextAlign.center,

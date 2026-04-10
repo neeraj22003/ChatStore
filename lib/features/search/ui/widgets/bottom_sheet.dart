@@ -8,6 +8,7 @@ import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_prov
 import 'package:flutter_experiments/features/search/ui/widgets/+-button.dart';
 
 import 'package:provider/provider.dart';
+
 import 'package:html/parser.dart' as parserhtml;
 
 class CustomBottommodalSheet {
@@ -102,7 +103,7 @@ class CustomBottommodalSheet {
               titletext(detail.title),
               readmore(detail.description),
               image(detail.imageUrl),
-              Additionbuttonlist().build(context, detail),
+              Additionbuttonlist(item: detail),
               reactivebox(),
             ],
           ),
