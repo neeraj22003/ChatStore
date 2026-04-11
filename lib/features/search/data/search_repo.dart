@@ -13,7 +13,7 @@ class SearchRepo {
   Map<String, SearchDomain> cache = {};
 
   void addcacheitem(String key, SearchDomain item) {
-    if (cache.length >= 2) {
+    if (cache.length >= 6) {
       final firstitem = cache.keys.first;
       cache.remove(firstitem);
     }
@@ -36,7 +36,12 @@ class SearchRepo {
     } else {
       final raw = await _dataSource.itemDetails(itemId);
       if (raw == null) return null;
+
       final inrate = await _currencyservice.getrate();
+      addcacheitem(
+        itemId,
+        SearchDomain.fromdetaildto(EbuyItemsDetails.fromjson(raw), inrate),
+      );
       return SearchDomain.fromdetaildto(EbuyItemsDetails.fromjson(raw), inrate);
     }
   }

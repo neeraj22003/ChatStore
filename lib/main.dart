@@ -1,19 +1,17 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-//import 'package:flutter_experiments/auth/signup/verify_page.dart';
-
 import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
+
 import 'package:flutter_experiments/features/auth/ui/screen/login_page.dart';
+import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
 import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
 import 'package:flutter_experiments/features/search/ui/provider/searchbar_provider.dart';
+import 'package:flutter_experiments/features/search_users/ui/provider/search_user_provider.dart';
 import 'package:flutter_experiments/home.dart';
 import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
-import 'package:flutter_experiments/features/chats_history/ui/providers/privider.dart';
+import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
 
 import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
 
@@ -22,7 +20,7 @@ import 'package:flutter_experiments/core/layout/providers/appbar_provider.dart';
 import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
 
 import 'package:provider/provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -32,19 +30,43 @@ Future<void> main() async {
   await dotenv.load(fileName: 'ebuy_token.env');
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null && !user.emailVerified) {
+    await FirebaseAuth.instance.signOut();
+  }
 
   runApp(
     MultiProvider(
       providers: [
+        StreamProvider<User?>(
+          create: (_) => FirebaseAuth.instance.authStateChanges(),
+          initialData: null,
+        ),
+        ProxyProvider<User?, ChatRepository>(
+          update: (_, user, _) => ChatRepository(user),
+        ),
+        ChangeNotifierProvider(create: (_) => Userprovider(), lazy: false),
+        ChangeNotifierProxyProvider<Userprovider, CartProvider>(
+          create: (_) => CartProvider(null),
+          update: (context, user, cart) {
+            cart ??= CartProvider(user.userDomain);
+
+            cart.user = user.userDomain;
+            if (user.userDomain != null) {
+              Future.microtask(() => cart?.init());
+            }
+            return cart;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => Appbarprovider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => SearchbarProvider()),
         ChangeNotifierProvider(create: (_) => BottomsheetProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => Authprovider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
-        ChangeNotifierProvider(create: (_) => Userprovider(), lazy: false),
+        ChangeNotifierProvider(create: (_) => SearchUserProvider()),
       ],
 
       child: const MyApp(),

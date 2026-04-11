@@ -1,28 +1,33 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
-import 'package:flutter_experiments/features/chats_history/ui/providers/privider.dart';
+import 'package:flutter_experiments/core/services/images.dart';
+import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+
+import 'package:flutter_experiments/features/chats/ui/widgets/chat_bubble.dart';
+import 'package:flutter_experiments/features/chats/ui/widgets/sender_row.dart';
+
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatelessWidget {
-  final String secondguyid;
-  final String secondguyname;
-  final String chatid;
+  final String? secondguyid;
+  final String? secondguyname;
+  final String? chatid;
   final bool isDesktop;
-
+  final String? profileimage;
   const ChatPage({
     super.key,
     required this.secondguyid,
     required this.secondguyname,
     required this.chatid,
     required this.isDesktop,
+    required this.profileimage,
   });
-
-  
 
   Widget reactivebox(BuildContext context) {
     if (Platform.isAndroid || Platform.isIOS) {
@@ -34,33 +39,6 @@ class ChatPage extends StatelessWidget {
       );
     }
     return const SizedBox(height: 0);
-  }
-
-  Widget chatbubble(bool me, String message, context) {
-    final color = Theme.of(context).colorScheme;
-    return Align(
-      alignment: me ? Alignment.centerRight : Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-        child: Material(
-          elevation: 4,
-          color: me ? Color(0xFFD1E4FF) : color.surfaceBright,
-          borderRadius: BorderRadius.only(
-            topLeft: me ? const Radius.circular(8) : Radius.zero,
-            topRight: me ? Radius.zero : const Radius.circular(8),
-            bottomLeft: const Radius.circular(8),
-            bottomRight: const Radius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              message,
-              style: TextStyle(color: me ? Color(0xFF001D36) : null),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget chatContainer() {
@@ -82,54 +60,8 @@ class ChatPage extends StatelessWidget {
           itemCount: doc.length,
           itemBuilder: (context, index) {
             bool me = doc[index]['senderId'] == currentUserId;
-            return chatbubble(me, doc[index]['message'], context);
+            return ChatBubble(me: me, message: doc[index]['message']);
           },
-        );
-      },
-    );
-  }
-
-  Widget sender(BuildContext context) {
-    final color = Theme.of(context).colorScheme;
-    return Consumer<ChatProvider>(
-      builder: (context, provider, child) {
-        return Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Material(
-                  elevation: 6,
-                  borderRadius: const BorderRadius.all(Radius.circular(25)),
-                  color: color.surfaceBright,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: TextField(
-                      controller: provider.msgcontroller,
-                      onSubmitted: (value) => provider.sendmessage(
-                        secondguyname,
-                        secondguyid,
-                        chatid,
-                      ),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Message',
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () => provider.sendmessage(
-                  secondguyname,
-                  secondguyid,
-                  chatid,
-                ),
-
-                icon: Icon(Icons.send_rounded, color: color.primary),
-              ),
-            ],
-          ),
         );
       },
     );
@@ -141,7 +73,12 @@ class ChatPage extends StatelessWidget {
       child: CircleAvatar(
         backgroundColor: color.primary,
         radius: 27,
-        child: CircleAvatar(radius: 23, child: Icon(Icons.person, size: 40)),
+        child: CircleAvatar(
+          radius: 23,
+          backgroundImage: profileimage != null
+              ? CachedNetworkImageProvider(profileimage!)
+              : AssetImage(ImageService.placeholder),
+        ),
       ),
     );
   }
@@ -182,13 +119,24 @@ class ChatPage extends StatelessWidget {
                 circleimage(color),
                 Flexible(
                   child: Text(
-                    secondguyname,
+                    secondguyname ?? '',
                     style: TextStyle(fontWeight: FontWeight.w500),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  await Provider.of<ChatProvider>(
+                    context,
+                    listen: false,
+                  ).deletechat(chatid!);
+                },
+                icon: const Icon(Icons.delete),
+              ),
+            ],
 
             backgroundColor: color.surfaceContainer,
           ),
@@ -205,13 +153,17 @@ class ChatPage extends StatelessWidget {
                   color.surface,
                   BlendMode.multiply,
                 ),
-                image: AssetImage('assets/bg.jpg'),
+                image: AssetImage(ImageService.chatBg),
               ),
             ),
             child: Column(
               children: [
                 Expanded(child: chatContainer()),
-                sender(context),
+                SenderRow(
+                  secondguyid: secondguyid,
+                  secondguyname: secondguyname,
+                  chatid: chatid,
+                ),
                 reactivebox(context),
               ],
             ),

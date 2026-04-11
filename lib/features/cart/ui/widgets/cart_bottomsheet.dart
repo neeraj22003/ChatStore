@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_experiments/features/cart/ui/widgets/location_sheet.dart';
 
 import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
@@ -37,20 +38,21 @@ class CartBottomSheet extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          TextButton(
-            onPressed: () {
-              locationsheet(context);
-            },
-            child: cart.isloading
-                ? CircularProgressIndicator()
-                : Text(
+
+          cart.isloading
+              ? const CircularProgressIndicator()
+              : TextButton(
+                  onPressed: () {
+                    locationsheet(context);
+                  },
+                  child: Text(
                     'Change',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: media.size.width < 224 ? 10 : 12,
                     ),
                   ),
-          ),
+                ),
         ],
       ),
     );
@@ -60,7 +62,7 @@ class CartBottomSheet extends StatelessWidget {
     CartProvider provider,
     ColorScheme color,
     MediaQueryData media,
-    OrderProvider order,
+
     BuildContext context,
     NavigationProvider navigation,
   ) {
@@ -68,8 +70,8 @@ class CartBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.only(left: 7, right: 7),
       child: ElevatedButton(
         onPressed: () {
-          provider.reset(order);
-          navigation.ontapbottom(2);
+          provider.placeOrder(context, provider.totalprice.toStringAsFixed(1));
+          navigation.ontapbottom(3);
           Navigator.pop(context);
         },
         style: ElevatedButton.styleFrom(
@@ -86,7 +88,7 @@ class CartBottomSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '₹${provider.totalprice}'
+                  '₹${provider.totalprice.toStringAsFixed(1)}'
                   '',
                   style: TextStyle(
                     fontSize: media.size.width < 195 ? 8 : 18,
@@ -129,7 +131,7 @@ class CartBottomSheet extends StatelessWidget {
     return Consumer3<CartProvider, OrderProvider, NavigationProvider>(
       builder: (context, provider, order, navigation, child) {
         return Container(
-          height: 170,
+          height: 190,
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -147,8 +149,8 @@ class CartBottomSheet extends StatelessWidget {
             children: [
               sheetheading(media, provider, context),
 
-              rowitem(provider, theme, media, order, context, navigation),
-              const SizedBox(height: 20),
+              rowitem(provider, theme, media, context, navigation),
+              const SizedBox(height: 40),
             ],
           ),
         );

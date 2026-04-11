@@ -15,10 +15,10 @@ class UserRepository {
         .doc(userid)
         .get();
 
-    return UserDomain.fromJson(user.data()!);
+    return UserDomain.fromJson(user.data() ?? {});
   }
 
-  Future<void> saveUser(UserDomain user, String userId) async {
+  static Future<void> saveUser(UserDomain user, String userId) async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)

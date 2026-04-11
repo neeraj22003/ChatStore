@@ -1,15 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-
-import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_experiments/features/cart/data/location_dto.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
 class LocationService {
   String? location;
 
-  Future<String?> fetcher(CartProvider cartprovider) async {
+  Future<String?> fetcher() async {
     if (Platform.isAndroid || Platform.isIOS || kIsWeb) {
       bool locationenbled = await Geolocator.isLocationServiceEnabled();
       if (!locationenbled) {
@@ -23,17 +23,15 @@ class LocationService {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      final apikey = 'pk.b43c18cb29d3ee72d3abe5cf215885f8';
+      final decodinngUrl =
+          'https://us1.locationiq.com/v1/reverse?key=$apikey&lat=${position.latitude}&lon=${position.longitude}&format=json&';
+      final response = await http.get(Uri.parse(decodinngUrl));
+      final data = jsonDecode(response.body);
+      final place = Place.fromJson(data);
 
-      List<Placemark> placemark = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
+      location = place.address;
 
-      Placemark place = placemark[0];
-
-      location = '''${place.name},${place.street},${place.subLocality},
-    ${place.locality},${place.postalCode},${place.country}''';
-    } else if (Platform.isWindows) {
       location;
     }
 

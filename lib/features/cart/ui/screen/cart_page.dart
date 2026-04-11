@@ -1,6 +1,5 @@
 import 'dart:math';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
 import 'package:flutter_experiments/features/cart/ui/widgets/cart_item.dart';
@@ -57,23 +56,24 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  
     return Consumer<NavigationProvider>(
-      builder: (context,cart,child)=>
-     Scaffold(
-     appBar: AppBar(leading: IconButton(
-      icon:const Icon(Icons.arrow_back),
-      onPressed:()=>cart.closedrwaer(true) ,),),
-      body:Consumer<CartProvider>(
-        builder:(context,provider,child){
+      builder: (context, cart, child) => Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => cart.closedrwaer(true),
+          ),
+        ),
+        body: Consumer<CartProvider>(
+          builder: (context, provider, child) {
             final color = Theme.of(context).colorScheme;
-         return Center(
-            child: Column(children: [heading(), cartlist(provider, color)]),
-          );
-        }
-      ),
+            return Center(
+              child: Column(children: [heading(), cartlist(provider, color)]),
+            );
+          },
+        ),
         bottomSheet: CartBottomSheet(),
-    ));
-    
+      ),
+    );
   }
 }

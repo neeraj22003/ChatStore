@@ -43,6 +43,7 @@ class SearchDomain {
 
   Map<String, dynamic> toJson() {
     return {
+      'itemId': itemId,
       'title': title,
       'imageUrl': imageUrl,
 

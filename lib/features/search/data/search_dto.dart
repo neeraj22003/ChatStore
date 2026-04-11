@@ -58,7 +58,7 @@ class EbuyItemsDetails {
       title: json['title'] ?? '',
       imageUrl: json['image']?['imageUrl'] ?? json['imageUrl'],
       price: json['price']?['value'] ?? '',
-      inrprice: json['inrprice'] ?? '',
+      inrprice: json['inrprice'] ?? 0.0,
       description: json['description'] ?? 'no description',
       quantity: json['quantity'] ?? 1,
     );
