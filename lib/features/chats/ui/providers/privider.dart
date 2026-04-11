@@ -40,6 +40,15 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deletechat(String chatid) async {
+    await FirebaseFirestore.instance
+        .collection('messages')
+        .doc(chatid)
+        .delete();
+    _chat = null;
+    notifyListeners();
+  }
+
   void sendmessage(
     String secondguy,
     String secondguyid,

@@ -120,7 +120,7 @@ class OrderSummary extends StatelessWidget {
                   provider.deleteorder(orders.orderId);
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
               ),
             ],
           ),

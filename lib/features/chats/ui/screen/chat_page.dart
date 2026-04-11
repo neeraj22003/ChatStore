@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
 import 'package:flutter_experiments/core/services/images.dart';
+import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
 
 import 'package:flutter_experiments/features/chats/ui/widgets/chat_bubble.dart';
 import 'package:flutter_experiments/features/chats/ui/widgets/sender_row.dart';
@@ -125,6 +126,17 @@ class ChatPage extends StatelessWidget {
                 ),
               ],
             ),
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  await Provider.of<ChatProvider>(
+                    context,
+                    listen: false,
+                  ).deletechat(chatid!);
+                },
+                icon: const Icon(Icons.delete),
+              ),
+            ],
 
             backgroundColor: color.surfaceContainer,
           ),
