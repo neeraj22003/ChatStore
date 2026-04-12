@@ -4,23 +4,23 @@ A personal Flutter playground to explore, test, and refine features, architectur
 
 # Key Features
 
-## Authentication Flow:-
+### Authentication Flow:-
 Complete custom Signup and Login pages.
 
-## Google Integration:-
+### Google Integration:-
 A "Link with Google" button that securely initializes and fetches the user's Gmail profile data.
 
-## 1-on-1 Chat System:-
+### 1-on-1 Chat System:-
 Search functionality to find other registered users.
 Real-time, private one-to-one chat functionality with a dedicated Chat History page.
 
-## Live eBay Integration:-
+### Live eBay Integration:-
 A dynamic search bar that fetches and displays real product data from the official eBay API.
 
-## Location-Aware E-Commerce- 
+### Location-Aware E-Commerce- 
 A full Cart and Order system that captures and utilizes real-time GPS coordinates.
 
-## Adaptive UI:-
+### Adaptive UI:-
 Fully responsive layout that adjusts seamlessly to different screen sizes and orientations.
 
 #  Project Demo :-
