@@ -133,7 +133,12 @@ class ChatPage extends StatelessWidget {
                     context,
                     listen: false,
                   ).deletechat(chatid!);
+                  if (!context.mounted) return;
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
                 },
+
                 icon: const Icon(Icons.delete),
               ),
             ],

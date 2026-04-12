@@ -37,7 +37,7 @@ class SenderRow extends StatelessWidget {
           ?isdark && provider.msgcontroller.text.isNotEmpty
               ? BoxShadow(
                   color: provider.msgcontroller.text.trim().isEmpty
-                      ? const Color.fromARGB(255, 253, 255, 255)
+                      ? Colors.transparent
                       : const Color.fromARGB(255, 66, 255, 255),
                   spreadRadius: 10,
                   blurRadius: 10,
