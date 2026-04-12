@@ -39,6 +39,19 @@ Fully responsive layout that adjusts seamlessly to different screen sizes and or
 
 #### Shows how the UI seamlessly adjusts across different screen sizes.
 
+## Architecture & Project Structure
+
+```text
+lib/
+├── src/
+│   ├── core/
+│   │    ├── layout/         # Responsive scaffold components
+│   │    ├── services        # Currency service convert usd rate to inr
+│   ├── features/            # Modular app features (Search Items,Cart,Search Users,Orders, Chat, etc.)
+│   └── app.dart             # Responsive layout wrapper (AppLayout)
+├── firebase_options.dart    # Firebase auto-generated config
+└── main.dart                # App entry point
+
 
 
 
