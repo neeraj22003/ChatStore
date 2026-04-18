@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:flutter_experiments/features/user/data/user_repository.dart';
+import 'package:flutter_experiments/src/features/user/data/user_repository.dart';
+import 'package:flutter_experiments/src/features/user/data/user_repository.dart';
 import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
 
 final GoogleSignIn _googlesignin = GoogleSignIn(
   params: GoogleSignInParams(
-    clientId:
-        '441564765916-oppmjrfch1e9f4emtmsd13e91il5bm6m.apps.googleusercontent.com',
-    clientSecret: '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',
+    clientId: dotenv.env['CLIENT_ID'],
+    clientSecret: dotenv.env['CLIENT_SECRET'],
     redirectPort: 8000,
   ),
 );

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/src/features/user/domain/user_domain.dart';
 
 class UserRepository {
   Future<void> injectprofileimage(String userId, String? profileimage) async {

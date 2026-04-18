@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:flutter_experiments/src/core/services/images.dart';
+import 'package:flutter_experiments/src/features/user/domain/user_domain.dart';
 
 class ProfileContainer extends StatelessWidget {
   final UserDomain? user;
