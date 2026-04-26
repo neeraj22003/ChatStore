@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
-import 'package:flutter_experiments/features/chats/ui/screen/chat_page.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/chats/domain/chat_domain.dart';
+import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
+import 'package:chat_shop/src/features/chats/ui/screen/chat_page.dart';
 import 'package:provider/provider.dart';
 
 class HistoryChatCard extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
 
-import 'package:flutter_experiments/features/search_users/ui/provider/search_user_provider.dart';
-import 'package:flutter_experiments/features/search_users/ui/widgets/searchbar.dart';
-import 'package:flutter_experiments/features/search_users/ui/widgets/userbuilder.dart';
+import 'package:chat_shop/src/features/search_users/ui/provider/search_user_provider.dart';
+import 'package:chat_shop/src/features/search_users/ui/widgets/searchbar.dart';
+import 'package:chat_shop/src/features/search_users/ui/widgets/userbuilder.dart';
 import 'package:provider/provider.dart';
 
 class UsersPage extends StatelessWidget {

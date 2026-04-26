@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/orders/data/orders_repositry.dart';
-import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
+import 'package:chat_shop/src/features/orders/data/orders_repositry.dart';
+import 'package:chat_shop/src/features/orders/domain/orderdomain.dart';
 
 class OrderProvider extends ChangeNotifier {
   List<Orders> _orders = [];

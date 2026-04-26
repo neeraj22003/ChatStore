@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
 
-import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
+import 'package:chat_shop/src/features/search/ui/provider/bottomsheet_provider.dart';
 
-import 'package:flutter_experiments/features/search/ui/widgets/bottom_sheet.dart';
+import 'package:chat_shop/src/features/search/ui/widgets/bottom_sheet.dart';
 
 import 'package:provider/provider.dart';
 

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
+import 'package:chat_shop/src/features/orders/ui/providers/order_provider.dart';
 
 import 'package:provider/provider.dart';
-import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
+import 'package:chat_shop/src/features/orders/domain/orderdomain.dart';
 
 class OrdersRepositry {
   Future<void> addOrders(

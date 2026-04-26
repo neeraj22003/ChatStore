@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/orders/domain/orderdomain.dart';
 
-import 'package:flutter_experiments/features/orders/ui/screen/order_summary.dart';
-import 'package:flutter_experiments/features/search/data/search_dto.dart';
+import 'package:chat_shop/src/features/orders/ui/screen/order_summary.dart';
+import 'package:chat_shop/src/features/search/data/search_dto.dart';
 
 class OrderCard extends StatelessWidget {
   final Orders order;

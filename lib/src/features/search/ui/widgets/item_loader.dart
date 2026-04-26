@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
+import 'package:chat_shop/src/core/services/images.dart';
 
-import 'package:flutter_experiments/features/search/data/search_repo.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
-import 'package:flutter_experiments/features/search/ui/provider/searchbar_provider.dart';
+import 'package:chat_shop/src/features/search/data/search_repo.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/search/ui/provider/searchbar_provider.dart';
 
-import 'package:flutter_experiments/features/search/ui/widgets/items_card.dart';
+import 'package:chat_shop/src/features/search/ui/widgets/items_card.dart';
 
 import 'package:provider/provider.dart';
 

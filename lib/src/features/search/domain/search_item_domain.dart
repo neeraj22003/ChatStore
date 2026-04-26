@@ -1,4 +1,4 @@
-import 'package:flutter_experiments/features/search/data/search_dto.dart';
+import 'package:chat_shop/src/features/search/data/search_dto.dart';
 
 class SearchDomain {
   final String itemId;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
+import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 class LocationbottomSheet extends StatelessWidget {

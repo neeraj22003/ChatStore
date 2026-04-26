@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/auth/ui/screen/signup_page.dart';
+import 'package:chat_shop/src/features/auth/ui/screen/signup_page.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth;
@@ -30,6 +30,7 @@ class AuthRepository {
 
   Future<String?> signUp(String email, String password) async {
     try {
+      await Future.delayed(Duration(milliseconds: 100));
       UserCredential signup = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,

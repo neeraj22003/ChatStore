@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
-import 'package:flutter_experiments/features/cart/ui/widgets/cart_item.dart';
-import 'package:flutter_experiments/features/cart/ui/widgets/cart_bottomsheet.dart';
-import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
+import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
+import 'package:chat_shop/src/features/cart/ui/widgets/cart_item.dart';
+import 'package:chat_shop/src/features/cart/ui/widgets/cart_bottomsheet.dart';
+import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {

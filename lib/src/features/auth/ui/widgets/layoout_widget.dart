@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/auth/ui/provider/auth_provider.dart';
 
 class CustomLayout extends StatelessWidget {
   final Authprovider? auth;

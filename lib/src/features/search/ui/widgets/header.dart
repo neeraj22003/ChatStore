@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
+import 'package:chat_shop/src/core/services/images.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});

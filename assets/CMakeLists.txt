@@ -4,11 +4,11 @@ set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
 
 
 cmake_minimum_required(VERSION 3.14)
-project(flutter_experiments LANGUAGES CXX)
+project(chat_shop LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "flutter_experiments")
+set(BINARY_NAME "chat_shop")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

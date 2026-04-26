@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_experiments/features/search_users/ui/provider/search_user_provider.dart';
+import 'package:chat_shop/src/features/search_users/ui/provider/search_user_provider.dart';
 
 class UsersearchBar extends StatelessWidget {
   final SearchUserProvider provider;

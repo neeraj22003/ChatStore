@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
-import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
+import 'package:chat_shop/src/features/chats/data/chat_repository.dart';
+import 'package:chat_shop/src/features/chats/domain/chat_domain.dart';
 
-import 'package:flutter_experiments/features/chats/ui/screen/chat_page.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
-import 'package:flutter_experiments/features/chats/ui/widgets/history_chat_card.dart';
+import 'package:chat_shop/src/features/chats/ui/screen/chat_page.dart';
+import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
+import 'package:chat_shop/src/features/chats/ui/widgets/history_chat_card.dart';
 
 import 'package:provider/provider.dart';
 

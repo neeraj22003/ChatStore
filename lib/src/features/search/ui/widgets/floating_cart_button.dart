@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-
-import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
-import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
+import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
+import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
 class FloatingCartButton extends StatelessWidget {
@@ -22,8 +21,7 @@ class FloatingCartButton extends StatelessWidget {
                     : theme.surfaceContainerHighest,
                 onPressed: () {
                   if (cartprovider.cartitem.values.isNotEmpty) {
-                    
-                   /* Navigator.push(
+                    /* Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => CartPage()),
                     );*/

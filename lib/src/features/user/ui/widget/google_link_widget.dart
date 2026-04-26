@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/src/core/services/images.dart';
-import 'package:flutter_experiments/src/features/user/ui/provider/provider.dart';
-import 'package:flutter_experiments/src/features/user/ui/widget/outlined_button.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
+import 'package:chat_shop/src/features/user/ui/widget/outlined_button.dart';
 
 class GoogleLinkWidget extends StatelessWidget {
   final Userprovider provider;

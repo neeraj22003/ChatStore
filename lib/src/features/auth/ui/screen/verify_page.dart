@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/auth/data/auth_repository.dart';
-import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
-import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/auth/data/auth_repository.dart';
+import 'package:chat_shop/src/features/auth/ui/provider/auth_provider.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 
 import 'package:provider/provider.dart';
 

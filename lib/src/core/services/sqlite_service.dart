@@ -1,5 +1,5 @@
-import 'package:flutter_experiments/features/search/data/search_dto.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/search/data/search_dto.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

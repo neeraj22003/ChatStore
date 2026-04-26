@@ -4,16 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_experiments/features/cart/data/cart_repository.dart';
-import 'package:flutter_experiments/features/cart/data/location_service.dart';
-import 'package:flutter_experiments/features/orders/data/orders_repositry.dart';
-import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
+import 'package:chat_shop/src/features/cart/data/cart_repository.dart';
+import 'package:chat_shop/src/features/cart/data/location_service.dart';
+import 'package:chat_shop/src/features/orders/data/orders_repositry.dart';
+import 'package:chat_shop/src/features/orders/domain/orderdomain.dart';
 
-import 'package:flutter_experiments/features/search/data/search_dto.dart';
-import 'package:flutter_experiments/features/search/data/search_repo.dart';
+import 'package:chat_shop/src/features/search/data/search_dto.dart';
+import 'package:chat_shop/src/features/search/data/search_repo.dart';
 
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/user/domain/user_domain.dart';
 
 class CartProvider extends ChangeNotifier {
   UserDomain? user;

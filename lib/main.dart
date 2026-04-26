@@ -2,31 +2,40 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
-
-import 'package:flutter_experiments/features/auth/ui/screen/login_page.dart';
-import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
-import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
-import 'package:flutter_experiments/features/search/ui/provider/searchbar_provider.dart';
-import 'package:flutter_experiments/features/search_users/ui/provider/search_user_provider.dart';
-import 'package:flutter_experiments/home.dart';
-import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
-
-import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
-
-import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
-import 'package:flutter_experiments/core/layout/providers/appbar_provider.dart';
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
+import 'package:chat_shop/src/app.dart';
+import 'package:chat_shop/src/core/layout/providers/appbar_provider.dart';
+import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
+import 'package:chat_shop/src/features/auth/ui/provider/auth_provider.dart';
+import 'package:chat_shop/src/features/auth/ui/screen/login_page.dart';
+import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
+import 'package:chat_shop/src/features/chats/data/chat_repository.dart';
+import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
+import 'package:chat_shop/src/features/orders/ui/providers/order_provider.dart';
+import 'package:chat_shop/src/features/search/ui/provider/bottomsheet_provider.dart';
+import 'package:chat_shop/src/features/search/ui/provider/searchbar_provider.dart';
+import 'package:chat_shop/src/features/search_users/ui/provider/search_user_provider.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+/*void _setupNativeThreadingBridge() {
+  const platform = MethodChannel('com.chat_shop/auth');
+  platform.setMethodCallHandler((call) async {
+    if (call.method == "onAuthStateChanged") {
+      debugPrint("✅ Thread-Safe: C++ Bridge confirmed Auth Update.");
+    }
+    if (call.method == "onFirebaseReady") {
+      debugPrint("🚀 Thread-Safe: C++ Bridge confirmed Firebase Ready.");
+    }
+  });
+}*/
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  // _setupNativeThreadingBridge();
   await dotenv.load(fileName: 'ebuy_token.env');
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

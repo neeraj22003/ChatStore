@@ -1,17 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:flutter_experiments/src/features/user/data/user_repository.dart';
-import 'package:flutter_experiments/src/features/user/data/user_repository.dart';
-import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
+import 'package:chat_shop/src/features/user/data/user_repository.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-final GoogleSignIn _googlesignin = GoogleSignIn(
-  params: GoogleSignInParams(
-    clientId: dotenv.env['CLIENT_ID'],
-    clientSecret: dotenv.env['CLIENT_SECRET'],
-    redirectPort: 8000,
-  ),
-);
+final GoogleSignIn _googlesignin = GoogleSignIn.instance;
 User? get currentUser => FirebaseAuth.instance.currentUser;
 
 class GoogleAuthservice {
@@ -34,15 +27,21 @@ class GoogleAuthservice {
   GoogleSignIn get google => _googlesignin;
   Future<String?> linkwithhgoogle() async {
     try {
-      await _googlesignin.signOut();
-      final credentials = await _googlesignin.signIn();
+      await _googlesignin.initialize(serverClientId: dotenv.env['CLIENT_ID']);
+      final GoogleSignInAccount googleuser = await _googlesignin.authenticate();
+      final authclient = await googleuser.authorizationClient.authorizeScopes([
+        'email',
+        'profile',
+        'openid',
+      ]);
+      final GoogleSignInAuthentication googleauth = googleuser.authentication;
 
-      AuthCredential credential = GoogleAuthProvider.credential(
-        idToken: credentials?.idToken,
-        accessToken: credentials?.accessToken,
+      final AuthCredential cred = GoogleAuthProvider.credential(
+        idToken: googleauth.idToken,
+        accessToken: authclient.accessToken,
       );
 
-      await currentUser?.linkWithCredential(credential);
+      await currentUser?.linkWithCredential(cred);
       await updateprofile();
 
       return null;

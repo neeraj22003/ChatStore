@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/orders/domain/orderdomain.dart';
+import 'package:chat_shop/src/features/orders/domain/orderdomain.dart';
 
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
-import 'package:flutter_experiments/features/orders/ui/widgets/summary_item_container.dart';
+import 'package:chat_shop/src/features/orders/ui/providers/order_provider.dart';
+import 'package:chat_shop/src/features/orders/ui/widgets/summary_item_container.dart';
 import 'package:provider/provider.dart';
 
 class OrderSummary extends StatelessWidget {

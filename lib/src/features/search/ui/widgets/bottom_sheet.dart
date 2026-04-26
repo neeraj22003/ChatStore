@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/search/data/search_repo.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/search/data/search_repo.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
 
-import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
-import 'package:flutter_experiments/features/search/ui/widgets/+-button.dart';
+import 'package:chat_shop/src/features/search/ui/provider/bottomsheet_provider.dart';
+import 'package:chat_shop/src/features/search/ui/widgets/+-button.dart';
 
 import 'package:provider/provider.dart';
 

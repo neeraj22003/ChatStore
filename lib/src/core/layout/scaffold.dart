@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/layout/widgets/appbar.dart';
-import 'package:flutter_experiments/core/layout/widgets/navigation_bar.dart';
-import 'package:flutter_experiments/features/chats/ui/screen/history_chat.dart';
-import 'package:flutter_experiments/features/orders/ui/screen/orderpage.dart';
-import 'package:flutter_experiments/features/search/ui/screen/search_page.dart';
-import 'package:flutter_experiments/features/search_users/ui/screen/users_page.dart';
-import 'package:flutter_experiments/features/user/ui/screen/acount_dashboard.dart';
-import 'package:flutter_experiments/features/cart/ui/screen/cart_page.dart';
-import 'package:flutter_experiments/features/search/ui/widgets/floating_cart_button.dart';
+import 'package:chat_shop/src/core/layout/widgets/appbar.dart';
+import 'package:chat_shop/src/core/layout/widgets/navigation_bar.dart';
+import 'package:chat_shop/src/features/chats/ui/screen/history_chat.dart';
+import 'package:chat_shop/src/features/orders/ui/screen/orderpage.dart';
+import 'package:chat_shop/src/features/search/ui/screen/search_page.dart';
+import 'package:chat_shop/src/features/search_users/ui/screen/users_page.dart';
+import 'package:chat_shop/src/features/user/ui/screen/acount_dashboard.dart';
+import 'package:chat_shop/src/features/cart/ui/screen/cart_page.dart';
+import 'package:chat_shop/src/features/search/ui/widgets/floating_cart_button.dart';
 
-import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
+import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
 
 import 'package:provider/provider.dart';
 

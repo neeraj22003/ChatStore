@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_experiments/features/auth/data/auth_repository.dart';
-import 'package:flutter_experiments/features/auth/ui/screen/verify_page.dart';
-import 'package:flutter_experiments/features/user/data/user_repository.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
-import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
+import 'package:chat_shop/src/features/auth/data/auth_repository.dart';
+import 'package:chat_shop/src/features/auth/ui/screen/verify_page.dart';
+import 'package:chat_shop/src/features/user/data/user_repository.dart';
+import 'package:chat_shop/src/features/user/domain/user_domain.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 
 class Authprovider extends ChangeNotifier {
   final GlobalKey<ScaffoldMessengerState> _snackbarKey =

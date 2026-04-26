@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/chats/data/chat_repository.dart';
+import 'package:chat_shop/src/features/chats/data/chat_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:flutter_experiments/features/chats/domain/chat_domain.dart';
-import 'package:flutter_experiments/features/search_users/domain/searchuser_domain.dart';
+import 'package:chat_shop/src/features/chats/domain/chat_domain.dart';
+import 'package:chat_shop/src/features/search_users/domain/searchuser_domain.dart';
 
 class ChatProvider extends ChangeNotifier {
   Map<String, SearchuserDomain>? _users;

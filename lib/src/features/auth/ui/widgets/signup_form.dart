@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_experiments/features/auth/ui/provider/auth_provider.dart';
-import 'package:flutter_experiments/features/auth/ui/widgets/custom_field.dart';
-import 'package:flutter_experiments/features/user/domain/user_domain.dart';
-import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
+import 'package:chat_shop/src/features/auth/ui/provider/auth_provider.dart';
+import 'package:chat_shop/src/features/auth/ui/widgets/custom_field.dart';
+import 'package:chat_shop/src/features/user/domain/user_domain.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -153,7 +153,7 @@ class _SignupFormState extends State<SignupForm> {
             phone: _phone!,
           );
           auth.getuserdata(user);
-        
+
           await auth.signUp(_email ?? '', _password ?? '', context);
         }
       },
@@ -178,7 +178,7 @@ class _SignupFormState extends State<SignupForm> {
             phone: _phone!,
           );
           auth.getuserdata(user);
-         
+
           auth.signUp(_email ?? '', _password ?? '', context);
         }
       },

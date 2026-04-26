@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
 
-import 'package:flutter_experiments/features/user/ui/provider/provider.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class SenderRow extends StatelessWidget {

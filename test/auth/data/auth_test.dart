@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_experiments/features/auth/data/auth_repository.dart';
+import 'package:chat_shop/src/features/auth/data/auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

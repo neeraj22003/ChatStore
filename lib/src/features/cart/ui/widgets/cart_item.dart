@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
 
 class CartItem extends StatelessWidget {
   final SearchDomain details;

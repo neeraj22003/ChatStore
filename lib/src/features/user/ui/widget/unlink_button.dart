@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/src/features/user/ui/provider/provider.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 
 class UnlinkButton extends StatelessWidget {
   final Userprovider user;

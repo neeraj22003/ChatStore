@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/src/features/user/data/google_auth_service.dart';
-import 'package:flutter_experiments/src/features/user/data/user_repository.dart';
-import 'package:flutter_experiments/src/features/user/domain/user_domain.dart';
+import 'package:chat_shop/src/features/user/data/google_auth_service.dart';
+import 'package:chat_shop/src/features/user/data/user_repository.dart';
+import 'package:chat_shop/src/features/user/domain/user_domain.dart';
 
 class Userprovider extends ChangeNotifier {
   UserDomain? _userDomain;
@@ -44,7 +44,8 @@ class Userprovider extends ChangeNotifier {
 
   Future<void> linkwithGoogle() async {
     final googleservice = GoogleAuthservice();
-    await googleservice.linkwithhgoogle();
+    final error = await googleservice.linkwithhgoogle();
+    debugPrint('lun$error');
     await loaduser(userId ?? '');
     notifyListeners();
   }

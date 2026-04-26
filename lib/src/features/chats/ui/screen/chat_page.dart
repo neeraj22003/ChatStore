@@ -5,12 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/layout/providers/navigation_provider.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/chats/ui/providers/privider.dart';
+import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
 
-import 'package:flutter_experiments/features/chats/ui/widgets/chat_bubble.dart';
-import 'package:flutter_experiments/features/chats/ui/widgets/sender_row.dart';
+import 'package:chat_shop/src/features/chats/ui/widgets/chat_bubble.dart';
+import 'package:chat_shop/src/features/chats/ui/widgets/sender_row.dart';
 
 import 'package:provider/provider.dart';
 

@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/orders/ui/widgets/order_card.dart';
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
+import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/features/orders/ui/widgets/order_card.dart';
+import 'package:chat_shop/src/features/orders/ui/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 
 class Orderpage extends StatelessWidget {

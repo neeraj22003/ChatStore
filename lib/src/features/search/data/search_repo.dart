@@ -1,7 +1,7 @@
-import 'package:flutter_experiments/core/services/currency_service.dart';
-import 'package:flutter_experiments/features/search/data/search_data_source.dart';
-import 'package:flutter_experiments/features/search/data/search_dto.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/core/services/currency_service.dart';
+import 'package:chat_shop/src/features/search/data/search_data_source.dart';
+import 'package:chat_shop/src/features/search/data/search_dto.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
 
 class SearchRepo {
   static final SearchRepo _instance = SearchRepo.internal();

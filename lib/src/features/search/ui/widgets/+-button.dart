@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/features/search/domain/search_item_domain.dart';
-import 'package:flutter_experiments/features/search/ui/provider/bottomsheet_provider.dart';
+import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
+import 'package:chat_shop/src/features/search/ui/provider/bottomsheet_provider.dart';
 
-import 'package:flutter_experiments/features/cart/ui/providers/cart_provider.dart';
+import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 class Additionbuttonlist extends StatelessWidget {
