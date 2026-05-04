@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 class Additionbuttonlist extends StatelessWidget {
   final SearchDomain item;
+  
   const Additionbuttonlist({super.key, required this.item});
   Widget addbutton(BottomsheetProvider provider) {
     return Padding(

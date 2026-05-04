@@ -26,26 +26,28 @@ class WideScaffolds extends StatelessWidget {
       Orderpage(),
     ];
     return Row(
-      children: [
-        Navigation().navigationRail(context, provider),
+        children: [
+          Navigation().navigationRail(context, provider),
 
-        VerticalDivider(
-          width: 1,
-          thickness: 1,
-          color: themecolor.outlineVariant,
-        ),
-        Expanded(
-          child: Scaffold(
-            key: provider.scaffoldkey,
-            appBar: CustomAppBar(),
-            body: pages[provider.selectedindex],
-            floatingActionButton: FloatingCartButton(),
-            endDrawer: Drawer(
-              child: provider.iscart ? CartPage() : AccountDashboard(),
+          VerticalDivider(
+            width: 1,
+            thickness: 1,
+            color: themecolor.outlineVariant,
+          ),
+          Expanded(
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              key: provider.scaffoldkey,
+              appBar: CustomAppBar(),
+              body: pages[provider.selectedindex],
+              floatingActionButton: FloatingCartButton(),
+              endDrawer: Drawer(
+                child: provider.iscart ? CartPage() : AccountDashboard(),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+    
     );
   }
 }
@@ -65,6 +67,7 @@ class Mobilescaffold extends StatelessWidget {
       Orderpage(),
     ];
     return Scaffold(
+      backgroundColor: Colors.white,
       key: provider.scaffoldkey,
       appBar: CustomAppBar(),
       body: pages[provider.selectedindex],

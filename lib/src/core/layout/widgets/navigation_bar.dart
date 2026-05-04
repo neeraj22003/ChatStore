@@ -31,6 +31,9 @@ class Navigation {
   ];
   Widget bottomNavigation(BuildContext context, NavigationProvider provider) {
     return NavigationBar(
+      
+      
+      backgroundColor: Colors.white,
       destinations: _navigationDestination,
       selectedIndex: provider.selectedindex,
       onDestinationSelected: provider.ontapbottom,
@@ -39,10 +42,14 @@ class Navigation {
 
   Widget navigationRail(BuildContext context, NavigationProvider provider) {
     final width = MediaQuery.of(context).size.width;
-    final themecolor = Theme.of(context).colorScheme;
+    final color= Theme.of(context).colorScheme;
     return NavigationRail(
       scrollable: true,
-      backgroundColor: themecolor.surfaceContainer,
+      selectedIconTheme: IconThemeData(
+         size: 28,
+        color:color.primary ),
+      indicatorColor: Colors.white,
+      backgroundColor:Colors.white,
       minWidth: width > 850 ? 160 : 120,
       destinations: _navigationRailDestination,
       selectedIndex: provider.selectedindex,

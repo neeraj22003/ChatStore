@@ -1,33 +1,39 @@
-
 import 'package:flutter/material.dart';
 
+class SearchbarProvider extends ChangeNotifier {
+  final TextEditingController _controller = TextEditingController();
+  String? _categoryid;
+  String? get id => _categoryid;
 
+  String? _categoryname;
+  String? get category => _categoryname;
 
+  TextEditingController get controller => _controller;
 
-class SearchbarProvider extends ChangeNotifier{
+  final ValueNotifier<bool> _categoryactive = ValueNotifier(false);
+  ValueNotifier<bool> get categoryactive => _categoryactive;
 
- final  TextEditingController _controller=TextEditingController();
+  int? _selectedindex;
+  int? get selectedindex => _selectedindex;
 
-  
-  TextEditingController get controller=>_controller;
-
-  void clearfield(){
+  void clearfield() {
     controller.clear();
+    _categoryid = null;
+    _categoryname = null;
+    categoryactive.value = false;
+    _selectedindex = null;
     notifyListeners();
   }
 
-  void trigger()async{
-   notifyListeners();
-   }
-
-  void onSubmitted(String controler){
-    controler=_controller.text;
+  void onsubmitted() async {
     notifyListeners();
   }
- 
 
-
-
-
-  
+  void setidandName(String id, String title, int index) {
+    _categoryid = id;
+    _categoryname = title;
+    categoryactive.value = true;
+    _selectedindex = index;
+    notifyListeners();
+  }
 }

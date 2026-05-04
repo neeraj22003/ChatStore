@@ -27,9 +27,8 @@ dependencies:
   cloud_firestore: ^6.3.0
   cached_network_image: ^3.4.1
   html: ^0.15.6
-  
-  
-  
+  liquid_glass_easy: ^1.1.1
+  flutter_staggered_grid_view: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -37,10 +36,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
   mockito: ^5.6.4
-  
 
 flutter:
   uses-material-design: true
   assets:
-   - ebuy_token.env
-   - assets/
+    - ebuy_token.env
+    - assets/
+
+# This block must have ZERO indentation to be recognized
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app.png"
+  remove_alpha_ios: true

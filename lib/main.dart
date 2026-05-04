@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:chat_shop/src/app.dart';
-import 'package:chat_shop/src/core/layout/providers/appbar_provider.dart';
+
 import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
 import 'package:chat_shop/src/features/auth/ui/provider/auth_provider.dart';
 import 'package:chat_shop/src/features/auth/ui/screen/login_page.dart';
@@ -20,18 +20,6 @@ import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
-/*void _setupNativeThreadingBridge() {
-  const platform = MethodChannel('com.chat_shop/auth');
-  platform.setMethodCallHandler((call) async {
-    if (call.method == "onAuthStateChanged") {
-      debugPrint("✅ Thread-Safe: C++ Bridge confirmed Auth Update.");
-    }
-    if (call.method == "onFirebaseReady") {
-      debugPrint("🚀 Thread-Safe: C++ Bridge confirmed Firebase Ready.");
-    }
-  });
-}*/
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +55,7 @@ Future<void> main() async {
             return cart;
           },
         ),
-        ChangeNotifierProvider(create: (_) => Appbarprovider()),
+       
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => SearchbarProvider()),
         ChangeNotifierProvider(create: (_) => BottomsheetProvider()),
@@ -87,22 +75,22 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return Consumer2<Appbarprovider, Authprovider>(
-      builder: (context, appbarprovider, auth, child) {
+    return Consumer< Authprovider>(
+      builder: (context, auth, child) {
         return MaterialApp(
           scaffoldMessengerKey: auth.snacbarkey,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             useMaterial3: true,
-            colorSchemeSeed: Colors.lightBlueAccent,
+            colorSchemeSeed:Colors.blue,
             brightness: Brightness.light,
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
-            colorSchemeSeed: Colors.lightBlueAccent,
+            colorSchemeSeed:Colors.blue,
             brightness: Brightness.dark,
           ),
-          themeMode: appbarprovider.thememode,
+         themeMode: ThemeMode.light,
 
           home: StreamBuilder<User?>(
             stream: FirebaseAuth.instance.authStateChanges(),

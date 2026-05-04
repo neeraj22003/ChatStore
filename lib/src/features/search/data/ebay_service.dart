@@ -77,4 +77,22 @@ class EbuyService {
       return null;
     }
   }
+
+  Future<List<dynamic>?> getCategoryITems(String categoryid) async {
+    final token = await getproductiontoken();
+    final url = await http.get(
+      Uri.parse(
+        'https://api.ebay.com/buy/browse/v1/item_summary/search?category_ids=$categoryid',
+      ),
+      headers: {
+        'Authorization': "Bearer $token",
+        "X-EBAY-C-MARKETPLACE-ID": "EBAY-US",
+      },
+    );
+    if (url.statusCode == 200) {
+      final data = jsonDecode(url.body);
+      return data['itemSummaries'] ?? [];
+    }
+    return null;
+  }
 }

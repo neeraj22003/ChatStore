@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:chat_shop/src/core/services/images.dart';
+
 
 import 'package:chat_shop/src/features/search/data/search_repo.dart';
 import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
@@ -17,17 +17,17 @@ class ItemLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<SearchbarProvider>();
-    return provider.controller.text.isEmpty
-        ? SliverToBoxAdapter(
-            child: Center(
-              child: Image.asset(scale: 3.5, ImageService.searchItembG),
-            ),
-          )
-        : FutureBuilder(
-            future: SearchRepo().searchItems(provider.controller.text.trim()),
+    Future<List<SearchDomain>?> loadItems(SearchbarProvider provider) {
+  if (provider.controller.text.isEmpty && provider.id != null) {
+    return SearchRepo().getcategoryitem(provider.id!);
+  } else {
+    return SearchRepo().searchItems(provider.controller.text.trim());
+  }
+}
+    return FutureBuilder(
+            future:loadItems(provider),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting &&
-                  provider.controller.text.isNotEmpty) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SliverToBoxAdapter(
                   child: Center(child: CircularProgressIndicator()),
                 );
@@ -46,11 +46,19 @@ class ItemLoader extends StatelessWidget {
                   sliver: ItemsList(results: item),
                 );
               }
+              if(!snapshot.hasData&&provider.id!=null||provider.controller.text.isNotEmpty){
+                return  SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Center(child: Text('')),
+                ),
+              );
+              }
 
               return SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 50),
-                  child: Center(child: Text('No item found')),
+                  child: Center(child: Text('')),
                 ),
               );
             },
@@ -72,14 +80,15 @@ class ItemsList extends StatelessWidget {
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
             childAspectRatio: 1.0,
-            mainAxisExtent: 225,
+            mainAxisExtent: 100,
+            
             crossAxisCount: crossaxiscount,
           ),
           delegate: SliverChildBuilderDelegate(childCount: results.length, (
             BuildContext context,
             int index,
           ) {
-            return ItemsCard(results: results, index: index);
+            return ItemsCard(results: results[index]);
           }),
         );
       },

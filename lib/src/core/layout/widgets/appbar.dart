@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chat_shop/src/core/layout/providers/appbar_provider.dart';
+
 import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
 
 import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
+import 'package:path/path.dart';
 
 import 'package:provider/provider.dart';
 
@@ -11,29 +14,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).colorScheme;
-    return Consumer3<Appbarprovider, CartProvider, NavigationProvider>(
+   
+    return Consumer3<Userprovider, CartProvider, NavigationProvider>(
       builder: (context, provider, auth, navi, child) {
         return AppBar(
+          backgroundColor: Colors.white,
           title: Text('Store', style: TextStyle(fontWeight: FontWeight.w700)),
-          backgroundColor: theme.surfaceContainer,
+          
           actions: [
-            IconButton(
-              onPressed: () async {
-                provider.themefuction();
-
-                //  provider.reset();
-              },
-              icon: provider.thememode == ThemeMode.dark
-                  ? const Icon(Icons.light_mode)
-                  : const Icon(Icons.dark_mode),
-            ),
-            const SizedBox(width: 4),
+           const SizedBox(width: 4),
             IconButton(
               onPressed: () {
                 navi.openendrawer(false);
               },
-              icon: const Icon(Icons.person),
+              icon:provider.userDomain?.profileimage!=null
+              ?CircleAvatar(radius: 15,
+                backgroundImage:CachedNetworkImageProvider( provider.userDomain!.profileimage!)
+              ) :const Icon(Icons.person),
             ),
           ],
         );
