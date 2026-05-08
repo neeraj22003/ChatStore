@@ -5,13 +5,14 @@ import 'package:chat_shop/src/features/search/data/search_dto.dart';
 import 'package:chat_shop/src/features/search/domain/search_item_domain.dart';
 
 class SearchRepo {
-  static final SearchRepo _instance = SearchRepo.internal();
-  factory SearchRepo() => _instance;
-  SearchRepo.internal();
-  final _dataSource = EbuyService();
+  final EbuyService _dataSource;
+ final CurrencyService _currencyservice;
+Map<String, SearchDomain> cache = {};
 
-  final _currencyservice = CurrencyService();
-  Map<String, SearchDomain> cache = {};
+  SearchRepo({EbuyService? datasource,CurrencyService? currencyserrvice})
+  :_dataSource=datasource??EbuyService(),
+  _currencyservice = currencyserrvice ?? CurrencyService();
+ 
 
   void addcacheitem(String key, SearchDomain item) {
     if (cache.length >= 6) {
@@ -23,7 +24,7 @@ class SearchRepo {
 
   Future<List<SearchDomain>> searchItems(String? query) async {
     if (query != null) {
-      final raw = await _dataSource.searchItems(query);
+      final raw = await _dataSource.ebayservice(query,null);
       if (raw == null) return [];
 
       final inrrate = await _currencyservice.getrate();
@@ -34,9 +35,18 @@ class SearchRepo {
     return [];
   }
 
-  Future<List<SearchDomain>?> getcategoryitem(String? id) async {
+  Future<List<SearchDomain>> feeditems() async {
+    final raw = await _dataSource.ebayservice(null, null);
+    if (raw == null) return [];
+    final inrate = await _currencyservice.getrate();
+    return raw.map((data) {
+      return SearchDomain.fromListdto(EbuyItemsModel.fromJson(data), inrate);
+    }).toList();
+  }
+
+  Future<List<SearchDomain>> getcategoryitem(String? id) async {
     if (id != null) {
-      final raw = await _dataSource.getCategoryITems(id);
+      final raw = await _dataSource.ebayservice(null,id);
       if (raw == null) return [];
 
       final inrrate = await _currencyservice.getrate();
@@ -44,7 +54,7 @@ class SearchRepo {
         return SearchDomain.fromListdto(EbuyItemsModel.fromJson(data), inrrate);
       }).toList();
     }
-    return null;
+    return [];
   }
 
   Future<SearchDomain?> getdetails(String itemId) async {

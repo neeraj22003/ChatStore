@@ -19,17 +19,21 @@ class ItemsCard extends StatelessWidget {
 
     final bottomsheetprovider = context.read<BottomsheetProvider>();
 
-    return ProductCard(
-      image: results.imageUrl,
-      title: results.title,
-      price: results.inrprice ?? 0.0,
-      ontap: (){
-        HapticFeedback.heavyImpact();
-        bottomsheetprovider.reset();
-       
-          bottomsheet.sheet(context, results, bottomsheetprovider);
-        
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left: 4,right: 4),
+      child: ProductCard(
+        isloading: false,
+        imageUrl: results.imageUrl,
+        title: results.title,
+        price: results.inrprice ?? 0.0,
+        onTap: (){
+          HapticFeedback.heavyImpact();
+          bottomsheetprovider.reset();
+         
+            bottomsheet.sheet(context, results, bottomsheetprovider);
+          
+        },
+      ),
     );
   }
 }

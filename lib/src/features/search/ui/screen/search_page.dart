@@ -1,5 +1,6 @@
 
 
+import 'package:chat_shop/src/features/search/ui/widgets/header.dart';
 import 'package:chat_shop/src/features/search/ui/widgets/horizontal_category.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class Search extends StatelessWidget {
       slivers: [
         HomeSearchBaar(),
         HorizontalCategory(),
+        Header(),
           ItemLoader(),
        
          ],

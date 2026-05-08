@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:chat_shop/src/core/layout/providers/navigation_provider.dart';
 
 import 'package:chat_shop/src/features/cart/ui/providers/cart_provider.dart';
-import 'package:path/path.dart';
+
 
 import 'package:provider/provider.dart';
 

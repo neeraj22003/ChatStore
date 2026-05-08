@@ -1,39 +1,28 @@
+import 'package:chat_shop/src/features/search/ui/provider/searchbar_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_shop/src/core/services/images.dart';
+import 'package:provider/provider.dart';
+
 
 class Header extends StatelessWidget {
   const Header({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return SliverToBoxAdapter(
-      child: Container(
-        height: width > 600 ? 200 : 150,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            bottomRight: Radius.circular(7),
-            bottomLeft: Radius.circular(7),
-          ),
-          image: DecorationImage(
-            repeat: ImageRepeat.repeat,
-
-            //colorFilter:ColorFilter.mode(Colors.pink, BlendMode.color) ,
-            image: AssetImage(ImageService.header),
-          ),
-        ),
-        foregroundDecoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(7),
-            bottomRight: Radius.circular(7),
-          ),
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.7), Colors.transparent],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ),
-        ),
+    
+    return Consumer<SearchbarProvider>(
+      builder: (context,provider,child)
+      => SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child:provider.category==null &&provider.controller.text.isEmpty? Text(
+              'Daily Deals',
+              style: TextStyle(
+                fontSize: 18,
+                color: const Color.fromARGB(255, 0, 0, 0),
+                fontWeight: FontWeight.w900,
+              ),
+            ):const SizedBox.shrink(),
       ),
-    );
+    ));
   }
 }

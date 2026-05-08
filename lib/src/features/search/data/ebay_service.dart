@@ -30,36 +30,45 @@ class EbuyService {
     return null;
   }
 
-  Future<List<dynamic>?> searchItems(String query) async {
+  Future<List<dynamic>?> ebayservice(String? query, String? categoryid) async {
     try {
+      
       final check = await http.get(Uri.parse('https://www.google.com'));
       if (check.statusCode != 200) {
         throw Exception('no internet');
       }
+
+      final token = await getproductiontoken();
+      final url = query != null
+          ? 'https://api.ebay.com/buy/browse/v1/item_summary/search?q=$query'
+          : categoryid != null
+          ? 'https://api.ebay.com/buy/browse/v1/item_summary/search?category_ids=$categoryid'
+          : 'https://api.ebay.com/buy/browse/v1/item_summary/search'
+                '?q=best+sellers'
+                '&filter=priceDiscount:[10..90]'
+                '&limit=20';
+      if (token == null) return null;
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'X-EBAY-C-MARKETPLACE-ID': 'EBAY-US',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        return data['itemSummaries'] ?? [];
+      }
+
+      return null;
     } catch (e) {
       throw Exception('No internet');
     }
-    final token = await getproductiontoken();
-    final String browseurl =
-        'https://api.ebay.com/buy/browse/v1/item_summary/search?q=';
-    if (token == null) return null;
-    final response = await http.get(
-      Uri.parse('$browseurl$query'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      return data['itemSummaries'] ?? [];
-    }
-
-    return null;
   }
 
+  
   Future<Map<String, dynamic>?> itemDiscription(String itemid) async {
     final token = await getproductiontoken();
     final browsurl = 'https://api.ebay.com/buy/browse/v1/item/';
@@ -76,23 +85,5 @@ class EbuyService {
     } else {
       return null;
     }
-  }
-
-  Future<List<dynamic>?> getCategoryITems(String categoryid) async {
-    final token = await getproductiontoken();
-    final url = await http.get(
-      Uri.parse(
-        'https://api.ebay.com/buy/browse/v1/item_summary/search?category_ids=$categoryid',
-      ),
-      headers: {
-        'Authorization': "Bearer $token",
-        "X-EBAY-C-MARKETPLACE-ID": "EBAY-US",
-      },
-    );
-    if (url.statusCode == 200) {
-      final data = jsonDecode(url.body);
-      return data['itemSummaries'] ?? [];
-    }
-    return null;
   }
 }

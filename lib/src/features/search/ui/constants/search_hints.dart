@@ -1,0 +1,17 @@
+ const List<String> hints = [
+    "iPhone 14 Pro",
+    "Find Nike sneakers",
+    "Get LEGO toys instantly",
+    "Order kitchen appliances",
+    "Discover Samsung Galaxy S23",
+    "Shop Apple MacBook Air",
+    "Browse PlayStation 5 consoles",
+    "Get Adidas running shoes",
+    "Find luxury watches",
+    "DSLR cameras",
+    "Order Bluetooth headphones",
+    "Explore smart home devices",
+    "Buy collectible trading cards",
+    "Check out gaming laptops",
+    "designer handbags",
+  ];

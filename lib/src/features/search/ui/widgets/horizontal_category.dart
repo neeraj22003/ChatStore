@@ -1,4 +1,4 @@
-import 'package:chat_shop/src/features/search/data/ebay_category.dart';
+import 'package:chat_shop/src/features/search/ui/constants/ebay_category.dart';
 import 'package:chat_shop/src/features/search/ui/provider/searchbar_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
