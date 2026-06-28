@@ -1,14 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_shop/src/features/auth/cubit/auth_cubit.dart';
+
+import 'package:chat_shop/src/features/auth/cubit/auth_states.dart';
+import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_shop/src/core/services/images.dart';
-import 'package:chat_shop/src/features/auth/data/auth_repository.dart';
-import 'package:chat_shop/src/features/auth/ui/provider/auth_provider.dart';
-import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
-
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyPage extends StatefulWidget {
-  const VerifyPage({super.key});
+  final String email;
+
+  const VerifyPage({super.key, required this.email});
 
   @override
   State<VerifyPage> createState() => _VerifyPageState();
@@ -19,38 +20,32 @@ class _VerifyPageState extends State<VerifyPage> {
   void initState() {
     super.initState();
 
-    context.read<Authprovider>().startVerificationPolling(
-      context.read<Userprovider>(),
-    );
+    context.read<AuthCubit>().onStartverification();
   }
 
   Widget message(BuildContext context) {
-    final user = context.read<Authprovider>();
     return Text(
-      'We’ve sent a verification link to your email ${user.user?.email}. '
+      'We’ve sent a verification link to your email ${widget.email}. '
       'Please check your inbox or "spam" folder and verify before continuing.',
       style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
     );
   }
 
   Widget indicator() {
-    return Consumer<Authprovider>(
-      builder: (context, provider, child) {
-        if (provider.verified) {
-          Future.delayed(const Duration(seconds: 3), () {
-            if (context.mounted && Navigator.canPop(context)) {
-              Navigator.pop(context);
-              // Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Home()));
-            }
-          });
+    final isSuccess = context.read<AuthCubit>().isSuccess;
+    return ValueListenableBuilder(
+      valueListenable: isSuccess,
+      builder: (context, isSuccess, child) {
+        if (isSuccess) {
           return const Icon(Icons.task_alt, color: Colors.green, size: 50);
+        } else {
+          return const CircularProgressIndicator();
         }
-        return const LinearProgressIndicator();
       },
     );
   }
 
-  Widget messageBox(BuildContext context) {
+  Widget messageBox() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -74,14 +69,10 @@ class _VerifyPageState extends State<VerifyPage> {
     );
   }
 
-  Widget cancelButton(BuildContext context) {
+  Widget cancelButton() {
     return TextButton(
       onPressed: () async {
-        context.read<Authprovider>().stopVerificationPolling();
-        await AuthRepository(FirebaseAuth.instance).cancelverification(context);
-
-        if (!context.mounted) return;
-        Navigator.pop(context);
+        await context.read<AuthCubit>().onTapCancel();
       },
       child: const Text('Cancel'),
     );
@@ -96,9 +87,9 @@ class _VerifyPageState extends State<VerifyPage> {
             children: [
               SizedBox(height: 250, child: Image.asset(ImageService.email)),
               const SizedBox(height: 18),
-              messageBox(context),
+              messageBox(),
               const SizedBox(height: 18),
-              cancelButton(context),
+              cancelButton(),
             ],
           ),
         ),

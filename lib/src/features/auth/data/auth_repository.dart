@@ -1,65 +1,134 @@
+
+
+import 'package:chat_shop/src/core/domain/result_domain.dart';
+import 'package:chat_shop/src/features/auth/data/local_auth_prefrence.dart';
+import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:chat_shop/src/features/auth/ui/screen/signup_page.dart';
 
-class AuthRepository {
+abstract class AuthRepository {
+  Future<Result<User?>> login(AuthDomain auth);
+  Future<Result<User?>> signUp(AuthDomain auth);
+  Future<Result<void>> cancelverification();
+  Future<void> saveUser(AuthDomain user);
+  Result<Stream<User?>> userAuthStates();
+  Future<Result<User?>> checkEmailverfication(User? user);
+  Future<void> logout();
+  Future<Result<AuthDomain?>> getUser();
+}
+
+class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuth _auth;
-  AuthRepository(this._auth);
+  final LocalAuthPrefrence local;
+  AuthRepositoryImpl(this._auth, this.local);
 
-  Future<String?> login(String email, String password) async {
+  @override
+  Result<Stream<User?>> userAuthStates() {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'wrong-password':
-          return 'Incorrect password';
-        case 'user-not-found':
-          return 'No user found with this email';
-        case 'invalid-email':
-          return 'Invalid email format';
-        case 'user-disabled':
-          return 'This account has been disabled';
-        default:
-          return 'Login failed: ${e.code}';
+      final hasuser = _auth.authStateChanges();
+      return Result.onSuccess(hasuser);
+    } catch (e) {
+      return Result.onfailure(e.toString());
+    }
+  }
+
+  @override
+  Future<Result<User?>> login(AuthDomain auth) async {
+    try {
+      final signin = await _auth.signInWithEmailAndPassword(
+        email: auth.email!,
+        password: auth.password!,
+      );
+      if (signin.user != null) {
+        return Result.onSuccess(signin.user);
+      } else {
+        return Result.onfailure('No User');
       }
     } catch (e) {
-      return e.toString();
+      return Result.onfailure('Error ${e.toString()}');
     }
-    return null;
   }
 
-  Future<String?> signUp(String email, String password) async {
+  @override
+  Future<Result<User?>> signUp(AuthDomain auth) async {
     try {
-      await Future.delayed(Duration(milliseconds: 100));
-      UserCredential signup = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+      await _auth.createUserWithEmailAndPassword(
+        email: auth.email!,
+        password: auth.password!,
       );
-      await signup.user?.sendEmailVerification();
-    } on FirebaseAuthException catch (e) {
-      return e.code;
+      await Future.delayed(const Duration(seconds: 1));
+      final freshuser = FirebaseAuth.instance.currentUser;
+      if (freshuser != null) {
+        return Result.onSuccess(freshuser);
+      } else {
+        return Result.onfailure('Something went wrong');
+      }
+    } catch (e) {
+      return Result.onfailure(e.toString());
     }
-    return null;
   }
 
-  Future<void> cancelverification(BuildContext context) async {
+  @override
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  @override
+  Future<Result<void>> cancelverification() async {
     final user = _auth.currentUser;
     try {
       if (user != null && !user.emailVerified) {
         await user.delete();
+        return Result.onSuccess(null);
+      } else {
+        return Result.onfailure('no user exist');
       }
+    } catch (e) {
+      return Result.onfailure(e.toString());
+    }
+  }
 
-      if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SignupPage()),
-        );
+  @override
+  Future<void> saveUser(AuthDomain user) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_auth.currentUser?.uid)
+        .set(user.toJson(), SetOptions(merge: true));
+  }
+
+  @override
+  Future<Result<User?>> checkEmailverfication(User? user) async {
+    try {
+      await user?.reload();
+      final freshuser = FirebaseAuth.instance.currentUser;
+      if (freshuser != null && freshuser.emailVerified) {
+        return Result.onSuccess(freshuser);
+      } else {
+        return Result.onfailure('not verified');
       }
-    } on FirebaseAuthException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.code)));
+    } catch (e) {
+      return Result.onfailure(e.toString());
+    }
+  }
+
+  @override
+  Future<Result<AuthDomain?>> getUser() async {
+    final result = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_auth.currentUser?.uid)
+        .get();
+
+    try {
+      if (result.data() == null) {
+        return Result.onSuccess(null);
+      } else {
+        final user = AuthDomain.fromJson(result.data()!);
+        return Result.onSuccess(user);
+      }
+    } catch (e) {
+      return Result.onfailure(e.toString());
     }
   }
 }
