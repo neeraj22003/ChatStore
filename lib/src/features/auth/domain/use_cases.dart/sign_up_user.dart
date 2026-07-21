@@ -1,6 +1,6 @@
-import 'package:chat_shop/src/core/domain/result_domain.dart';
-import 'package:chat_shop/src/features/auth/data/auth_repository.dart';
+import 'package:chat_shop/src/core/result/result_domain.dart';
 import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
+import 'package:chat_shop/src/features/auth/domain/auth_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpUser {

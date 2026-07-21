@@ -1,5 +1,5 @@
 import 'package:chat_shop/src/core/layout/scaffold/adaptive_layout.dart';
-import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/core/assets/images.dart';
 import 'package:chat_shop/src/features/auth/ui/screen/login_view.dart';
 import 'package:chat_shop/src/features/auth/ui/screen/signup_view.dart';
 import 'package:flutter/material.dart';

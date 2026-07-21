@@ -1,4 +1,4 @@
-import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/core/assets/images.dart';
 import 'package:chat_shop/src/features/auth/cubit/auth_cubit.dart';
 
 import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
@@ -87,12 +87,12 @@ class _StateLoginView extends State<LoginView> {
   Future<void> _signInFunction() async {
     if (_key.currentState!.validate()) {
       _key.currentState?.save();
-     await context.read<AuthCubit>().
+      context.read<AuthCubit>().
         signIn(
           AuthDomain(
-            phone: null,
-            name: null,
-            address: null,
+            phone: '',
+            name: '',
+            address: '',
             email: email!,
             password: password!,
           ),

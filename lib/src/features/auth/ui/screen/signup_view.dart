@@ -140,11 +140,11 @@ class _SignUpViewState extends State<SignUpView> {
     if (_key.currentState!.validate()) {
       _key.currentState?.save();
       final user = AuthDomain(
-        address: _address,
-        name: _name,
+        address: _address!,
+        name: _name!,
         password: _password,
-        phone: _phone,
-        email: _email,
+        phone: _phone!,
+        email: _email!,
       );
       await context.read<AuthCubit>().signup(user);
     }

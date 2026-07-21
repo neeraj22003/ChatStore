@@ -1,10 +1,11 @@
-import 'package:chat_shop/src/features/auth/data/auth_repository.dart';
-import 'package:http/http.dart';
+
+import 'package:chat_shop/src/core/result/result_domain.dart';
+import 'package:chat_shop/src/features/auth/domain/auth_repo.dart';
 
 class Logout {
   final AuthRepository repo;
   Logout(this.repo);
-  Future<void> call() async {
-    await repo.logout();
+  Future<Result<bool>> call() async {
+    return  await repo.logout();
   }
 }

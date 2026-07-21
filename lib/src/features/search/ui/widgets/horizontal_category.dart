@@ -1,45 +1,53 @@
-import 'package:chat_shop/src/features/search/ui/constants/ebay_category.dart';
-import 'package:chat_shop/src/features/search/ui/provider/searchbar_provider.dart';
+import 'package:chat_shop/src/features/search/domain/category_domain.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HorizontalCategory extends StatelessWidget {
-  const HorizontalCategory({super.key});
+  final List<CategoryDomain> list;
+  final ValueNotifier<int?> selectedindex;
+  final ValueChanged<int> onSelect;
+  const HorizontalCategory({
+    super.key,
+    required this.list,
+    required this.selectedindex,
+    required this.onSelect,
+  });
 
-  
   Widget categorycard(
     ColorScheme color,
     int index,
     IconData icon,
     String title,
     String id,
-    SearchbarProvider provider,
   ) {
-    bool isselected = provider.selectedindex == index;
     return Padding(
       padding: const EdgeInsets.all(2.0),
 
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        borderRadius: BorderRadius.all(const Radius.circular(20)),
-        color: isselected ? color.primaryContainer : Colors.grey.withOpacity(0.2),
-        child: InkWell(
-          onTap: () {
-            
-             
-              provider.setidandName(id, title, index);
-            
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Icon(icon, color: isselected ? color.primary : null),
-                Text(title),
-              ],
+      child: ValueListenableBuilder(
+        valueListenable: selectedindex,
+        builder: (context, selectedindex, child) {
+          bool isselected=selectedindex==index;
+          return Material(
+            clipBehavior: Clip.antiAlias,
+            borderRadius: BorderRadius.all(const Radius.circular(20)),
+            color: isselected
+                ? color.primaryContainer
+                : Colors.grey.withValues(alpha: 0.2),
+            child: InkWell(
+              onTap: () {
+                onSelect(index);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(icon, color: isselected ? color.primary : null),
+                    Text(title),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -47,8 +55,7 @@ class HorizontalCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-    final category = EbayCategory.list;
-    final provider = context.watch<SearchbarProvider>();
+
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.all(8),
@@ -57,15 +64,14 @@ class HorizontalCategory extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
 
-            itemCount: category.length,
+            itemCount: list.length,
             itemBuilder: (context, index) {
               return categorycard(
                 color,
                 index,
-                category[index].icon,
-                category[index].name,
-                category[index].id,
-                provider,
+                list[index].icon,
+                list[index].name,
+                list[index].id,
               );
             },
           ),

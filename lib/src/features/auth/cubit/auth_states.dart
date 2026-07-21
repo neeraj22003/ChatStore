@@ -1,4 +1,4 @@
-import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
+
 
 abstract class AuthStates {}
 
@@ -7,8 +7,8 @@ class Authinitial extends AuthStates {}
 class Authloading extends AuthStates {}
 
 class NeedVerfication extends AuthStates {
-  final AuthDomain userObject;
-  NeedVerfication({required this.userObject});
+  final String email;
+  NeedVerfication({required this.email});
 }
 
 class Authenticated extends AuthStates {}

@@ -1,16 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:flutter/material.dart';
-import 'package:chat_shop/src/features/chats/data/chat_repository.dart';
-import 'package:chat_shop/src/features/chats/domain/chat_domain.dart';
 
-import 'package:chat_shop/src/features/chats/ui/screen/chat_page.dart';
-import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
-import 'package:chat_shop/src/features/chats/ui/widgets/history_chat_card.dart';
 
-import 'package:provider/provider.dart';
 
-class AdaptiveHistoryPage extends StatelessWidget {
+/*class AdaptiveHistoryPage extends StatelessWidget {
   const AdaptiveHistoryPage({super.key});
   @override
   Widget build(BuildContext context) {
@@ -97,3 +89,4 @@ class HistoryChatPage extends StatelessWidget {
     );
   }
 }
+*/

@@ -1,9 +1,8 @@
 import 'package:chat_shop/src/features/auth/cubit/auth_cubit.dart';
 
-import 'package:chat_shop/src/features/auth/cubit/auth_states.dart';
-import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
+
 import 'package:flutter/material.dart';
-import 'package:chat_shop/src/core/services/images.dart';
+import 'package:chat_shop/src/core/assets/images.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyPage extends StatefulWidget {
@@ -20,7 +19,7 @@ class _VerifyPageState extends State<VerifyPage> {
   void initState() {
     super.initState();
 
-    context.read<AuthCubit>().onStartverification();
+    context.read<AuthCubit>().verify();
   }
 
   Widget message(BuildContext context) {

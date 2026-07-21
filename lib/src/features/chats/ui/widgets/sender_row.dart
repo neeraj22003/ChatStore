@@ -1,64 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:chat_shop/src/features/chats/ui/providers/privider.dart';
-
-import 'package:chat_shop/src/features/user/ui/provider/provider.dart';
-import 'package:provider/provider.dart';
 
 class SenderRow extends StatelessWidget {
-  final String? secondguyid;
-  final String? secondguyname;
-  final String? chatid;
-  const SenderRow({
-    super.key,
-    required this.secondguyid,
-    required this.secondguyname,
-    required this.chatid,
-  });
+  final TextEditingController controller;
+  final VoidCallback onSend;
+  const SenderRow({super.key, required this.controller, required this.onSend});
 
-  Widget sendbutton(
-    ColorScheme color,
-    ChatProvider provider,
-    Userprovider currentuser,
-  ) {
+  Widget sendbutton(ColorScheme color) {
     bool isdark = color.brightness == Brightness.dark;
     return IconButton(
-      onPressed: () => provider.msgcontroller.text.trim().isEmpty
-          ? () {}
-          : provider.sendmessage(
-              secondguyname ?? '',
-              secondguyid ?? '',
-              chatid ?? '',
-              provider.msgcontroller.text,
-              currentuser.userDomain?.name ?? '',
-            ),
+      onPressed: onSend,
 
-      icon: Icon(
-        shadows: [
-          ?isdark && provider.msgcontroller.text.isNotEmpty
-              ? BoxShadow(
-                  color: provider.msgcontroller.text.trim().isEmpty
-                      ? Colors.transparent
-                      : const Color.fromARGB(255, 66, 255, 255),
-                  spreadRadius: 10,
-                  blurRadius: 10,
-                )
-              : null,
-        ],
-        Icons.send_rounded,
-        size: 30,
-        color: provider.msgcontroller.text.trim().isEmpty
-            ? color.secondary
-            : isdark
-            ? Colors.white
-            : Color(0xFF4169E1),
+      icon: ValueListenableBuilder(
+        valueListenable: controller,
+        builder: (context, value, child) {
+          return Icon(
+            shadows: (value.text.isNotEmpty && isdark)
+                ? [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 66, 255, 255),
+                      spreadRadius: 10,
+                      blurRadius: 10,
+                    ),
+                  ]
+                : [],
+            Icons.send_rounded,
+            size: 30,
+            color: value.text.trim().isEmpty
+                ? color.secondary
+                : isdark
+                ? Colors.white
+                : Color(0xFF4169E1),
+          );
+        },
       ),
     );
   }
 
   Widget textfield(
     ColorScheme color,
-    ChatProvider provider,
-    Userprovider currentuser,
+   
   ) {
     return Material(
       elevation: 6,
@@ -67,16 +47,9 @@ class SenderRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 16),
         child: TextField(
-          controller: provider.msgcontroller,
-          onSubmitted: (value) => provider.msgcontroller.text.trim().isEmpty
-              ? () {}
-              : provider.sendmessage(
-                  secondguyname ?? '',
-                  secondguyid ?? '',
-                  chatid ?? '',
-                  provider.msgcontroller.text,
-                  currentuser.userDomain?.name ?? '',
-                ),
+          controller: controller,
+          onSubmitted:(v)=>onSend()
+                ,
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: 'Message',
@@ -89,18 +62,17 @@ class SenderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-    return Consumer2<ChatProvider, Userprovider>(
-      builder: (context, provider, currentuser, child) {
+   
         return Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Expanded(child: textfield(color, provider, currentuser)),
-              sendbutton(color, provider, currentuser),
+              Expanded(child: textfield(color,)),
+              sendbutton(color, ),
             ],
           ),
         );
-      },
-    );
+      
+    
   }
 }

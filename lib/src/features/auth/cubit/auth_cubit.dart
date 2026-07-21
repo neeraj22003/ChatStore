@@ -1,70 +1,35 @@
 import 'dart:async';
 
+import 'package:chat_shop/src/core/user/domain/user_usecases/user_usecase.dart';
 import 'package:chat_shop/src/features/auth/cubit/auth_states.dart';
 import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
 import 'package:chat_shop/src/features/auth/domain/use_cases.dart/usecases_bundle/use_cases_bundle.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthCubit extends Cubit<AuthStates> {
-  final AuthUseCases usecases;
+  final AuthUseCases authusecases;
+  final UserUsecase userUsecase;
+
   bool isAnyfunctionrunning = false;
   final ValueNotifier<bool> isSuccess = ValueNotifier(false);
-  AuthCubit(this.usecases) : super(Authinitial()) {
-    isAnyfunctionrunning
-        ? null
-        : usecases.userAuthStates.call().data?.listen((user) {
-            _verfyUser(user);
-          });
-  }
+  AuthCubit(this.authusecases, this.userUsecase) : super(Authinitial());
+
   Future<void> logout() async {
-    await usecases.logout.call();
-  }
-
-  void _verfyUser(User? user, {Timer? timer}) async {
-    try {
-      await user?.reload();
-      final freshuser = FirebaseAuth.instance.currentUser;
-      final userObject = await usecases.getLocalUserUseCase.call();
-
-      final emailverified = await usecases.checkEmailVerification.call(user);
-      if (freshuser != null) {
-        print(freshuser.uid);
-        if (userObject == null) {
-          emit(
-            AuthError(
-              error: 'please verify using same device , you used for sign up',
-            ),
-          );
-        } else if (emailverified.data != null) {
-           timer?.cancel();
-          isSuccess.value = true;
-          
-          if(timer!=null){
-            await usecases.saveUserFirebase.call(userObject);
-
-          }
-         
-          emit(Authenticated());
-        } else {
-          emit(NeedVerfication(userObject: userObject));
-        }
-      } else {
-        emit(Authinitial());
-      }
-    } catch (e) {
-      emit(AuthError(error: e.toString()));
+    final reslult = await authusecases.logout.call();
+    if (reslult.isFailure) {
+      emit(AuthError(error: reslult.error));
     }
+    emit(Authinitial());
   }
 
   Future<void> onTapCancel() async {
     isAnyfunctionrunning = isAnyfunctionrunning;
     emit(Authloading());
     try {
-      final delete = await usecases.cancelVerfication.call();
+      final delete = await authusecases.cancelVerfication.call();
       if (delete.isSuccess) {
         emit(Authinitial());
       } else {
@@ -75,48 +40,51 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  Future<void> onStartverification() async {
-    isAnyfunctionrunning = true;
-    final freshuser = FirebaseAuth.instance.currentUser;
-    await freshuser?.sendEmailVerification();
-    Timer.periodic(const Duration(seconds: 4), (timer) async {
-      _verfyUser(freshuser, timer: timer);
-    });
+  Future<void> verify() async {
+    final result = await authusecases.verify.call();
+    if (result.isFailure) {
+      emit(AuthError(error: result.error));
+    }
+    if (result.data != null && result.data!) {
+      emit(Authenticated());
+    } else {
+      emit(Authinitial());
+    }
   }
 
   Future<void> signIn(AuthDomain user) async {
-    isAnyfunctionrunning = true;
     emit(Authloading());
-    try {
-      final signin = await usecases.singIN.call(user);
-      if (signin.isSuccess) {
-        if (signin.data != null && signin.data!.emailVerified) {
-          emit(Authenticated());
-        } else {
-          _verfyUser(signin.data);
-        }
-      } else {
-        emit(AuthError(error: signin.error));
+
+    final signin = await authusecases.singIN.call(user);
+    if (signin.isFailure) {
+      emit(AuthError(error: signin.error));
+    }
+
+    if (signin.data != null) {
+      await userUsecase.getUser.call();
+      emit(Authenticated());
+    } else {
+      final userdata = await userUsecase.getUser.call();
+      if (userdata.isFailure) {
+        emit(AuthError(error: userdata.error));
       }
-    } catch (e) {
-      emit(AuthError(error: e.toString()));
+      emit(NeedVerfication(email: userdata.data!.email));
     }
   }
 
   Future<void> signup(AuthDomain user) async {
     isAnyfunctionrunning = true;
     emit(Authloading());
-    try {
-      final signup = await usecases.signUp.call(auth: user);
-      await usecases.saveLocaluser(user);
 
-      if (signup.isSuccess && signup.data != null) {
-        emit(NeedVerfication(userObject: user));
-      } else {
-        emit(AuthError(error: signup.error));
-      }
-    } catch (e) {
-      emit(AuthError(error: e.toString()));
+    final signup = await authusecases.signUp.call(auth: user);
+    if (signup.isFailure) {
+      emit(AuthError(error: signup.error));
     }
+    final saveuser = await userUsecase.saveUser.call(user);
+
+    if (saveuser.isFailure) {
+      emit(AuthError(error: saveuser.error));
+    }
+    emit(NeedVerfication(email: user.email!));
   }
 }

@@ -3,40 +3,50 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class Itembuilder<T> extends StatelessWidget {
-  final Future<List<T>> future;
+  final List<T>? items;
+  final bool isloading;
+
   final Widget? waitingWidget;
-  final Widget Function(BuildContext, T) itemBuilder;
-
+  final Widget Function(BuildContext, T)? itemBuilder;
+  final int? mincount;
   final Widget? errorWidget;
-
+  final int? truncatedevidecountvalue;
+  final ScrollPhysics? physics;
+  final double? mainaxisextent;
   const Itembuilder({
     super.key,
-    required this.future,
+    this.physics,
+    this.items,
+    this.mincount,
+    this.mainaxisextent,
+    this.truncatedevidecountvalue,
+    this.isloading = false,
     this.waitingWidget,
     this.errorWidget,
-    required this.itemBuilder,
+    this.itemBuilder,
   });
 
-  Widget itembuilder(dynamic item, bool isloading) {
+  Widget grid(List<T> data, bool loading) {
     return LayoutBuilder(
       builder: (context, constraint) {
-        final crossAxisCount = max(3, constraint.maxWidth ~/ 264);
-        final skeletoncount = (constraint.maxWidth * 0.1).toInt();
+        final crossAxisCount = max(
+          mincount ?? 3,
+          constraint.maxWidth ~/ (truncatedevidecountvalue ?? 264),
+        );
+        final skeletoncount = (constraint.maxWidth * 0.02).toInt();
         return GridView.builder(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+          physics: physics,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
 
-            mainAxisExtent: 160,
+            mainAxisExtent: mainaxisextent??160,
           ),
-          itemCount: isloading ? skeletoncount : item.length,
+          itemCount: isloading ? skeletoncount : data.length,
           itemBuilder: (context, index) {
-            return isloading
-                ? waitingWidget
-                : itemBuilder(context, item[index]);
+            return loading ? waitingWidget : itemBuilder!(context, data[index]);
           },
         );
       },
@@ -45,29 +55,9 @@ class Itembuilder<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<T>>(
-      future: future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: waitingWidget != null
-                ? itembuilder(null, true)
-                : const CircularProgressIndicator(),
-          );
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Center(
-              child: errorWidget ?? Text(snapshot.error.toString()),
-            ),
-          );
-        }
+    if (isloading) return grid([], true);
 
-        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-          return itembuilder(snapshot.data!, false);
-        }
-        return const Center(child: Text('no item found'));
-      },
-    );
+    if (items!.isEmpty) return const Center(child: Text('no item found'));
+    return grid(items!, false);
   }
 }
