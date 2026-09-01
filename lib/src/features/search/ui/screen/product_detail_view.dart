@@ -100,12 +100,14 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         if (state is IsDetailsLoading) {
           return Wrap(
             children: [
-              const Center(
+              const SafeArea(child:  Center(
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
+                  padding: EdgeInsets.all(4.0),
+                  child: SizedBox(
+                    height: 35,width: 35,
+                    child: CircularProgressIndicator(strokeWidth:2 ,)),
                 ),
-              ),
+              ),)
             ],
           );
         } else if (state is IsDetailsError) {

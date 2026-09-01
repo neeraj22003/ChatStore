@@ -10,6 +10,8 @@ import 'package:chat_shop/src/features/auth/data/auth_service_impl.dart';
 
 import 'package:chat_shop/src/features/cart/data/cart_repo_impl.dart';
 import 'package:chat_shop/src/features/cart/data/location_service.dart';
+import 'package:chat_shop/src/features/chat_history/data/chat_history_data.dart';
+import 'package:chat_shop/src/features/chat_history/data/chat_history_repo_impl.dart';
 import 'package:chat_shop/src/features/chats/data/chat_data_source.dart';
 import 'package:chat_shop/src/features/chats/data/chat_repository.dart';
 import 'package:chat_shop/src/features/orders/data/order_localdb.dart';
@@ -21,7 +23,6 @@ import 'package:chat_shop/src/features/search_users/data/search_user_service.dar
 import 'package:chat_shop/src/features/user_dashboard/data/google_auth_service.dart';
 import 'package:chat_shop/src/features/user_dashboard/data/user_dashboard_repository_impl.dart';
 import 'package:chat_shop/src/injecters.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> repoDi() async {
   di.registerLazySingleton(
@@ -47,4 +48,5 @@ Future<void> repoDi() async {
     () => OrdersRepoImpl(di<OrderStoreimpl>(), di<OrderLocaldb>()),
   );
   di.registerLazySingleton(() => ChatRepoImpl(di<ChatDataSource>()));
+  di.registerLazySingleton(() => ChatHistoryRepoImpl(di<ChatHistoryData>()));
 }

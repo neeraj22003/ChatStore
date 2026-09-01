@@ -1,4 +1,3 @@
-import 'package:chat_shop/src/features/chats/data/chat_data_source.dart';
 
 class ChatUserDomain {
   final String id;

@@ -6,36 +6,33 @@ import 'package:chat_shop/src/features/user_dashboard/domain/use_cases/use_cases
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserDashboardCubit extends Cubit<UserState> {
+class UserDashboardCubit extends Cubit<UserDashBoardState> {
   final UserUsecase userUsecase;
   final UserdashboardUseCases userdashboardUseCases;
+  UserDomain? _user;
   UserDashboardCubit(this.userUsecase, this.userdashboardUseCases)
-    : super(UserState(isloading: true));
+    : super(UserDashBoardInitial());
 
   Future<void> getUser() async {
-    emit(state.copywith(isloading: true));
-   
+    emit(UserDashBoardLoading());
+
     final getuser = await userUsecase.getUser();
 
     final isuserlinked = await userdashboardUseCases.isUserLinked();
-   
+
     if (getuser.isFailure) {
-      emit(state.copywith(error: getuser.error, isloading: false));
+      emit(UserDashBoardError(getuser.error));
     }
-    if (getuser.isSuccess) {
-     
+    if (getuser.isSuccess && getuser.data != null) {
+      _user = getuser.data;
       emit(
-        state.copywith(
-          userdata: getuser.data,
-          islinked: isuserlinked.data,
-          isloading: false,
-        ),
+        UserDashBoardLoaded(user: getuser.data!, islinked: isuserlinked.data!)
       );
     }
   }
 
   Future<void> linkWithGoogle() async {
-    emit(state.copywith(isloading: true));
+    emit(UserDashBoardLoading());
 
     try {
       final link = await userdashboardUseCases.linkUser();
@@ -44,36 +41,36 @@ class UserDashboardCubit extends Cubit<UserState> {
         await userUsecase.injectProfile.call();
         final userdata = await userUsecase.getUser();
         emit(
-          state.copywith(
-            islinked: isuserlinked.data,
-            userdata: userdata.data,
-            isloading: false,
-          ),
+         UserDashBoardLoaded(user: userdata.data!, islinked: isuserlinked.data!)
         );
       } else {
-        emit(state.copywith(error: link.error));
+        emit(UserDashBoardError(link.error));
       }
     } catch (e) {
-      emit(state.copywith(error: e.toString()));
+      emit(UserDashBoardError(e.toString()));
     }
   }
 
   Future<void> unlink() async {
-    emit(state.copywith(isloading: true));
+    emit(UserDashBoardLoading());
 
     try {
       await userdashboardUseCases.unlinkUser();
       final isuserlinked = await userdashboardUseCases.isUserLinked();
       final userdata = await userUsecase.getUser();
       emit(
-        state.copywith(
-          userdata: userdata.data,
-          islinked: isuserlinked.data,
-          isloading: false,
-        ),
+        UserDashBoardLoaded(user: userdata.data!, islinked: isuserlinked.data!)
       );
     } catch (e) {
-      emit(state.copywith(error: e.toString()));
+      emit(UserDashBoardError(e.toString()));
     }
   }
+
+  Future<void> retry() async {
+    final isuserlinked = await userdashboardUseCases.isUserLinked();
+    emit(
+      UserDashBoardLoaded(user: _user!, islinked: isuserlinked.data!)
+    );
+  }
+
 }

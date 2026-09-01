@@ -1,5 +1,4 @@
 import 'package:chat_shop/src/core/user/domain/user_usecases/user_usecase.dart';
-import 'package:chat_shop/src/features/search_users/data/search_user_repo.dart';
 
 import 'package:chat_shop/src/features/search_users/bloc/search_user_event.dart';
 import 'package:chat_shop/src/features/search_users/bloc/search_user_state.dart';
@@ -23,7 +22,7 @@ class SearchUserBloc extends Bloc<SearchUserEvent, SearchUserState> {
       }
       if (result.isSuccess) {
         final currentuser = await userUsecase.getUser.call();
-
+        
         emit(SearchUserLoaded(result.data!, currentuser.data!));
       }
     });

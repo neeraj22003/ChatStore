@@ -2,10 +2,7 @@ import 'package:chat_shop/src/core/result/result_domain.dart';
 import 'package:chat_shop/src/core/user/data/user_domain_dto.dart';
 import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 import 'package:chat_shop/src/core/user/domain/user_localdb.dart';
-import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -42,10 +39,11 @@ class UserLocaldbimpl implements UserLocaldb {
   Future<Result<UserDomain?>> getUser() async {
     try {
       final db = await initDb();
+
       final result = await db.query(
         'user',
         where: 'id=?',
-        whereArgs: [user!.uid],
+        whereArgs: [user?.uid ?? FirebaseAuth.instance.currentUser?.uid],
       );
       if (result.isNotEmpty) {
         print('beatuty');
@@ -59,25 +57,55 @@ class UserLocaldbimpl implements UserLocaldb {
   }
 
   @override
-  Future<Result<bool>> saveUser(AuthDomain user) async {
+  Future<Result<bool>> saveUser(UserDomain user) async {
     try {
       final userdto = UserDto(
-        id: user.id!,
+        id: user.id,
 
-        name: user.name!,
-        address: user.address!,
-        email: user.email!,
-        phone: user.phone!,
-        profileimage: user.profile ?? '',
+        name: user.name,
+        address: user.address,
+        email: user.email,
+        phone: user.phone,
+        profileimage: user.profileimage,
       );
       final db = await initDb();
-      final result = await db.insert('user', userdto.toJson());
+      final result = await db.insert(
+        'user',
+        userdto.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
       if (result > 0) {
         print('save');
         return Result.onSuccess(result > 0);
       }
       print('fail');
       return Result.onfailure('something went wrong during inserting in db');
+    } catch (e) {
+      return Result.onfailure(e.toString());
+    }
+  }
+
+  @override
+  Future<Result<bool>> deletelocaluser() async {
+    try {
+      final db = await initDb();
+      await db.delete('user');
+      return Result.onSuccess(true);
+    } catch (e) {
+      return Result.onfailure(e.toString());
+    }
+  }
+
+  @override
+  Future<Result<bool>> updateprofile(String? url) async {
+    if (url == null || url.isEmpty) {
+      return Result.onfailure('url is empty');
+    }
+
+    try {
+      final db = await initDb();
+      await db.update('user', {'profileimage': url});
+      return Result.onSuccess(true);
     } catch (e) {
       return Result.onfailure(e.toString());
     }

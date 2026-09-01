@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chat_shop/src/core/syncer/auth_verify.dart';
 import 'package:chat_shop/src/core/syncer/item_syncer.dart';
@@ -10,6 +11,7 @@ import 'package:chat_shop/src/features/auth/cubit/auth_states.dart';
 
 import 'package:chat_shop/src/features/auth/ui/screen/verify_page.dart';
 import 'package:chat_shop/src/features/cart/cubit/cart_cubit.dart';
+import 'package:chat_shop/src/features/chat_history/bloc/chat_history_bloc.dart';
 import 'package:chat_shop/src/features/chats/bloc/chat_bloc.dart';
 import 'package:chat_shop/src/features/orders/bloc/order_bloc.dart';
 import 'package:chat_shop/src/features/search/bloc/detail_cubit/detail_cubit.dart';
@@ -34,8 +36,11 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+   if (Platform.isAndroid || Platform.isIOS) {
+  } else {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   await dotenv.load(fileName: 'ebuy_token.env');
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -43,6 +48,10 @@ Future<void> main() async {
   await di.allReady();
   await di<ItemSyncer>().run();
   await di<AuthVerify>().run();
+ 
+   await di<ItemSyncer>().run();
+  await di<AuthVerify>().run();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -54,7 +63,8 @@ Future<void> main() async {
         BlocProvider(create: (_) => di<CartCubit>()),
         BlocProvider(create: (_) => di<SearchUserBloc>()),
         BlocProvider(create: (_) => di<OrderBloc>()),
-        BlocProvider(create: (_)=>di<ChatBloc>())
+        BlocProvider(create: (_) => di<ChatBloc>()),
+        BlocProvider(create: (_) => di<ChatHistoryBloc>()),
       ],
 
       child: const MyApp(),
@@ -70,12 +80,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.blue,
+        colorSchemeSeed: const Color.fromARGB(255, 0, 15, 87),
         brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.blue,
+        colorSchemeSeed: const Color.fromARGB(255, 0, 0, 108),
         brightness: Brightness.dark,
       ),
       themeMode: ThemeMode.light,

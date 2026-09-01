@@ -24,7 +24,7 @@ class OrderLocaldb {
          name TEXT,
          phone TEXT,
          address TEXT,
-         item TEXT,
+         items TEXT,
          total TEXT,
          createdAT TEXT
       )''');
@@ -48,6 +48,7 @@ class OrderLocaldb {
       final result = await db.insert('orders', orderdto.toSqJson());
       return Result.onSuccess(result.toString());
     } catch (e) {
+      print('savelocal${e.toString()}');
       return Result.onfailure(e.toString());
     }
   }
@@ -56,6 +57,7 @@ class OrderLocaldb {
     try {
       final db = await initdb();
       final result = await db.query('orders');
+      print('ordersLocaDb=${result.length}');
       if (result.isEmpty) {
         return Result.onSuccess([]);
       } else {

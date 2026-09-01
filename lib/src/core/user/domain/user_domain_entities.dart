@@ -6,7 +6,7 @@ class UserDomain {
   final String email;
   final String phone;
   final String? password;
-
+  
   UserDomain({
     required this.id,
     required this.profileimage,
@@ -14,9 +14,7 @@ class UserDomain {
     required this.address,
     required this.email,
     required this.phone,
-    this.password
+    
+    this.password,
   });
-
-  
- 
 }

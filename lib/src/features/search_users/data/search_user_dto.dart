@@ -1,5 +1,3 @@
-import 'package:chat_shop/src/core/items/domain/search_item_domain.dart';
-import 'package:chat_shop/src/features/chats/domain/chat_domain.dart';
 import 'package:chat_shop/src/features/chats/domain/chat_user_domain.dart';
 import 'package:chat_shop/src/features/search_users/domain/searchuser_domain.dart';
 
@@ -23,8 +21,8 @@ class SearchuserDto {
   factory SearchuserDto.fromJson(Map<String, dynamic> data) {
     return SearchuserDto(
       id: data['id'] ?? '',
-      profileimage: data['profileimage'],
-      name: data['name'],
+      profileimage: data['profileimage']??'',
+      name: data['name']??'',
       address: data['address'] ?? '',
       email: data['email'] ?? '',
       phone: data['phone'] ?? '',

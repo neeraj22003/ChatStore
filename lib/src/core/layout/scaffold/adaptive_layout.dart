@@ -5,7 +5,7 @@ class CustomAdaptiveLayout extends StatelessWidget {
   final PreferredSizeWidget? appbar;
   final Widget pages;
   final void Function(int?)? onNavigationTap;
-  final int? selectedIndex;
+  final ValueNotifier<int>? selectedIndex;
   final Widget? endDrawer;
   final List<NavigationList>? navigtionlist;
   final Widget? firstchildforbiggscreen;
@@ -25,41 +25,54 @@ class CustomAdaptiveLayout extends StatelessWidget {
   });
 
   Widget navigationRail(ColorScheme color, double width) {
-    return navigtionlist !=null&&firstchildforbiggscreen==null
-        ? NavigationRail(
-            scrollable: true,
-            selectedIconTheme: IconThemeData(size: 28, color: color.primary),
-            indicatorColor: Colors.white,
-            backgroundColor: Colors.white,
-            minWidth: width > 850 ? 160 : 120,
-            destinations: navigtionlist!
-                .map(
-                  (data) => NavigationRailDestination(
-                    icon: Icon(data.icon),
-                    label: Text(data.title),
-                  ),
-                )
-                .toList(),
-            selectedIndex: selectedIndex,
-            onDestinationSelected: onNavigationTap,
+    return navigtionlist != null && firstchildforbiggscreen == null
+        ? ValueListenableBuilder(
+            valueListenable: selectedIndex!,
+            builder: (context, value, child) {
+              return NavigationRail(
+                scrollable: true,
+                selectedIconTheme: IconThemeData(
+                  size: 28,
+                  color: color.primary,
+                ),
+                indicatorColor: Colors.white,
+                backgroundColor: Colors.white,
+                minWidth: width > 850 ? 160 : 120,
+                destinations: navigtionlist!
+                    .map(
+                      (data) => NavigationRailDestination(
+                        icon: Icon(data.icon),
+                        label: Text(data.title),
+                      ),
+                    )
+                    .toList(),
+                selectedIndex: value,
+                onDestinationSelected: onNavigationTap,
+              );
+            },
           )
         : const SizedBox.shrink();
   }
 
   Widget bottomNavigation() {
     return navigtionlist != null
-        ? NavigationBar(
-            backgroundColor: Colors.white,
-            destinations: navigtionlist!
-                .map(
-                  (data) => NavigationDestination(
-                    icon: Icon(data.icon),
-                    label: data.title,
-                  ),
-                )
-                .toList(),
-            selectedIndex: selectedIndex??0,
-            onDestinationSelected: onNavigationTap,
+        ? ValueListenableBuilder(
+            valueListenable: selectedIndex!,
+            builder: (context, value, child) {
+              return NavigationBar(
+                backgroundColor: Colors.white,
+                destinations: navigtionlist!
+                    .map(
+                      (data) => NavigationDestination(
+                        icon: Icon(data.icon),
+                        label: data.title,
+                      ),
+                    )
+                    .toList(),
+                selectedIndex: value,
+                onDestinationSelected: onNavigationTap,
+              );
+            },
           )
         : const SizedBox.shrink();
   }
@@ -73,7 +86,9 @@ class CustomAdaptiveLayout extends StatelessWidget {
         if (constraints.maxWidth > 480) {
           return Row(
             children: [
-             firstchildforbiggscreen!=null? Expanded(child: firstchildforbiggscreen!):const SizedBox.shrink(),
+              firstchildforbiggscreen != null
+                  ? Expanded(child: firstchildforbiggscreen!)
+                  : const SizedBox.shrink(),
               navigationRail(themecolor, constraints.maxWidth),
               VerticalDivider(
                 width: 1,

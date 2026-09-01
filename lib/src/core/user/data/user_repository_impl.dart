@@ -1,12 +1,8 @@
 import 'package:chat_shop/src/core/result/result_domain.dart';
-import 'package:chat_shop/src/core/user/data/user_domain_dto.dart';
 import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 import 'package:chat_shop/src/core/user/domain/user_firestore.dart';
 import 'package:chat_shop/src/core/user/domain/user_localdb.dart';
 import 'package:chat_shop/src/core/user/domain/user_repository.dart';
-import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserRepositoryImpl extends UserRepository {
   final UserStore userFirestore;
@@ -40,21 +36,7 @@ class UserRepositoryImpl extends UserRepository {
     if (user.data != null) {
       print('nad');
 
-      final userr = AuthDomain(
-        id: 'MHxOKSBan2dzj60RFo1kwpzl0tq2',
-
-        email: user.data!.email,
-
-        address: user.data!.address,
-
-        name: user.data!.name,
-
-        phone: user.data!.phone,
-
-        profile: user.data!.profileimage,
-      );
-
-      final result = await localdb.saveUser(userr);
+      final result = await localdb.saveUser(user.data!);
       if (result.isFailure) {
         return Result.onfailure(result.error);
       }
@@ -68,11 +50,20 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<Result<bool>> injectprofileimage() async {
-    return await userFirestore.injectprofileimage();
+    final store = await userFirestore.injectprofileimage();
+    if (store.isFailure) {
+      return Result.onfailure(store.error);
+    }
+    final local = await localdb.updateprofile(store.data);
+    if (local.isFailure) {
+      return Result.onfailure(local.error);
+    }
+    _userDomain?.profileimage == store.data;
+    return Result.onSuccess(local.data!);
   }
 
   @override
-  Future<Result<bool>> saveUser(AuthDomain user) async {
+  Future<Result<bool>> saveUser(UserDomain user) async {
     final localsave = await localdb.saveUser(user);
     if (localsave.isFailure) {
       return Result.onfailure(localsave.error);
@@ -81,6 +72,16 @@ class UserRepositoryImpl extends UserRepository {
     if (store.isFailure) {
       return Result.onfailure(store.error);
     }
-    return Result.onSuccess(store.data!);
+    return Result.onSuccess(true);
+  }
+
+  @override
+  Future<Result<bool>> deletelocaluser() async {
+    final result = await localdb.deletelocaluser();
+    if (result.isFailure) {
+      return Result.onfailure(result.error);
+    }
+    _userDomain = null;
+    return Result.onSuccess(result.data!);
   }
 }

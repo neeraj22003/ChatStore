@@ -9,7 +9,7 @@ abstract class MyGoogleService {
 }
 
 final GoogleSignIn _googlesignin = GoogleSignIn.instance;
-User? get currentUser => FirebaseAuth.instance.currentUser;
+User? get _currentUser => FirebaseAuth.instance.currentUser;
 
 class GoogleAuthservice extends MyGoogleService {
   @override
@@ -31,7 +31,7 @@ class GoogleAuthservice extends MyGoogleService {
         accessToken: authclient.accessToken,
       );
 
-      await currentUser?.linkWithCredential(cred);
+      await _currentUser?.linkWithCredential(cred);
 
       return Result.onSuccess(null);
     } catch (e) {

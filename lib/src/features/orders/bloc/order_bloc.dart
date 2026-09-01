@@ -29,6 +29,7 @@ class OrderBloc extends Bloc<OrderEvents, OrderStates> {
         if (result.data!.isEmpty) {
           emit(OrderInitial());
         } else {
+        
           emit(OrderLoaded(result.data!));
         }
       }

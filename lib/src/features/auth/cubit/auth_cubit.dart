@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 import 'package:chat_shop/src/core/user/domain/user_usecases/user_usecase.dart';
 import 'package:chat_shop/src/features/auth/cubit/auth_states.dart';
 import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
@@ -13,11 +14,15 @@ class AuthCubit extends Cubit<AuthStates> {
   final AuthUseCases authusecases;
   final UserUsecase userUsecase;
 
-  bool isAnyfunctionrunning = false;
   final ValueNotifier<bool> isSuccess = ValueNotifier(false);
   AuthCubit(this.authusecases, this.userUsecase) : super(Authinitial());
 
   Future<void> logout() async {
+    final user = await userUsecase.deleteLocaluser.call();
+    if (user.isFailure) {
+      emit(AuthError(error: user.error));
+      
+    }
     final reslult = await authusecases.logout.call();
     if (reslult.isFailure) {
       emit(AuthError(error: reslult.error));
@@ -26,7 +31,6 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   Future<void> onTapCancel() async {
-    isAnyfunctionrunning = isAnyfunctionrunning;
     emit(Authloading());
     try {
       final delete = await authusecases.cancelVerfication.call();
@@ -73,14 +77,21 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   Future<void> signup(AuthDomain user) async {
-    isAnyfunctionrunning = true;
     emit(Authloading());
 
     final signup = await authusecases.signUp.call(auth: user);
     if (signup.isFailure) {
       emit(AuthError(error: signup.error));
     }
-    final saveuser = await userUsecase.saveUser.call(user);
+    final userobj = UserDomain(
+      id: signup.data!.uid,
+      profileimage: null,
+      name: user.name!,
+      address: user.address!,
+      email: user.email!,
+      phone: user.phone!,
+    );
+    final saveuser = await userUsecase.saveUser.call(userobj);
 
     if (saveuser.isFailure) {
       emit(AuthError(error: saveuser.error));

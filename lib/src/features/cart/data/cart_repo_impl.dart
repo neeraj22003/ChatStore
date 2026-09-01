@@ -8,6 +8,15 @@ class CartRepoImpl implements CartRepositry {
 
   @override
   Future<Result<String?>> getlocation() async {
-    return await service.fetcher();
+    final location = await service.location();
+    if(location.isFailure){
+     return  Result.onfailure(location.error);
+    }
+    final decoder = await service.locationDecoder(location.data!);
+    if (decoder.isFailure) {
+    
+      return Result.onfailure(decoder.error);
+    }
+    return Result.onSuccess(decoder.data);
   }
 }

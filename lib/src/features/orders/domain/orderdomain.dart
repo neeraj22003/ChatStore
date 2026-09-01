@@ -1,5 +1,4 @@
 import 'package:chat_shop/src/core/items/domain/search_item_domain.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Orders {
   final String orderId;

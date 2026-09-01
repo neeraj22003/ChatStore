@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 class CustomUsercard extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String? userImage;
+  final String userImage;
   final Widget? trailing;
   final String placeholder;
   final VoidCallback onTap;
-
+  
   const CustomUsercard({
     super.key,
     required this.title,
@@ -39,9 +39,9 @@ class CustomUsercard extends StatelessWidget {
         radius: width < 258 ? 17 : 26,
         child: CircleAvatar(
           radius: width < 258 ? 15 : 24,
-          backgroundImage: userImage == null
+          backgroundImage: userImage.isEmpty
               ? AssetImage(placeholder)
-              : CachedNetworkImageProvider(userImage!),
+              : CachedNetworkImageProvider(userImage),
         ),
       ),
     );

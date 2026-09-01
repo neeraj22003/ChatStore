@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CircleImage extends StatelessWidget {
   final Color? color;
@@ -17,7 +16,7 @@ class CircleImage extends StatelessWidget {
         radius: 22,
         backgroundImage: (image == null || image!.isEmpty)
             ? AssetImage(placeholderImage!)
-            : CachedNetworkImageProvider(image!,),
+            : CachedNetworkImageProvider(image??'',errorListener: (p0) => Icons.broken_image,),
       ),
     );
   }

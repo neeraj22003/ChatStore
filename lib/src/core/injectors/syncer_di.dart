@@ -6,6 +6,7 @@ import 'package:chat_shop/src/features/cart/cubit/cart_cubit.dart';
 import 'package:chat_shop/src/features/orders/bloc/order_bloc.dart';
 import 'package:chat_shop/src/features/user_dashboard/cubit/user_cubit.dart';
 import 'package:chat_shop/src/injecters.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> syncerDi() async {
   di.registerLazySingleton(
@@ -14,6 +15,7 @@ Future<void> syncerDi() async {
       di<CartCubit>(),
       di<OrderBloc>(),
       di<UserDashboardCubit>(),
+      di<FirebaseAuth>().currentUser
     ),
   );
  

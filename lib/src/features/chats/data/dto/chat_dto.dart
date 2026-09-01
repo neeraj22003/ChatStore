@@ -5,6 +5,7 @@ class ChatDto {
   final String senderid;
   final String reciverid;
   final String message;
+  final List<String>? participants;
   final DateTime? timestamp;
 
   ChatDto({
@@ -12,10 +13,12 @@ class ChatDto {
     required this.reciverid,
     required this.message,
     this.timestamp,
+   this.participants
   });
 
   Map<String, dynamic> todoc(bool issqflite) {
     return {
+
       'senderId': senderid,
       'receiverId': reciverid,
       'message': message,
@@ -28,7 +31,7 @@ class ChatDto {
       senderid: data['senderId'],
       reciverid: data['receiverId'],
       message: data['message'],
-      timestamp: data['timestamp'],
+      timestamp: ((data['timestamp'] as Timestamp?)?.toDate()),
     );
   }
   ChatDomain toDomain() {
@@ -36,7 +39,7 @@ class ChatDto {
       senderid: senderid,
       reciverid: reciverid,
       message: message,
-      timestamp: timestamp,
+      timestamp: timestamp??DateTime.now(),
     );
   }
 }

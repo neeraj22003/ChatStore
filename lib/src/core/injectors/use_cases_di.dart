@@ -6,8 +6,9 @@ import 'package:chat_shop/src/features/auth/data/auth_repository_impl.dart';
 import 'package:chat_shop/src/features/auth/domain/use_cases.dart/usecases_bundle/use_cases_bundle.dart';
 import 'package:chat_shop/src/features/cart/data/cart_repo_impl.dart';
 import 'package:chat_shop/src/features/cart/domain/cart_usecases.dart';
+import 'package:chat_shop/src/features/chat_history/data/chat_history_repo_impl.dart';
+import 'package:chat_shop/src/features/chat_history/domain/chat_history_use_cases/use_cases.dart';
 import 'package:chat_shop/src/features/chats/data/chat_repository.dart';
-import 'package:chat_shop/src/features/chats/domain/chat_repo.dart';
 import 'package:chat_shop/src/features/chats/domain/use_cases/chat_usecase/chat_use_cases.dart';
 import 'package:chat_shop/src/features/orders/data/orders_repo_impl.dart';
 import 'package:chat_shop/src/features/orders/domain/order_use_cases/use_case_bundle/use_case_bundle.dart';
@@ -31,4 +32,5 @@ Future<void> useCasesdi() async {
   );
   di.registerFactory(() => SearchuserUseCase(di<SearchUserRepoImpl>()));
   di.registerFactory(() => ChatUseCases(di<ChatRepoImpl>()));
+  di.registerFactory(() => ChathistoryUseCases(di<ChatHistoryRepoImpl>()));
 }

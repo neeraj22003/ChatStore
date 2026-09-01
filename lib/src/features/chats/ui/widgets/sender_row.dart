@@ -8,6 +8,7 @@ class SenderRow extends StatelessWidget {
   Widget sendbutton(ColorScheme color) {
     bool isdark = color.brightness == Brightness.dark;
     return IconButton(
+      
       onPressed: onSend,
 
       icon: ValueListenableBuilder(
@@ -63,15 +64,16 @@ class SenderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
    
-        return Padding(
-          padding: const EdgeInsets.all(8),
+        return SafeArea(child: Padding(
+          padding: const EdgeInsets.only(bottom: 8,left: 10,),
           child: Row(
+           
             children: [
               Expanded(child: textfield(color,)),
               sendbutton(color, ),
             ],
           ),
-        );
+        ));
       
     
   }

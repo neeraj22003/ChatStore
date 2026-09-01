@@ -7,8 +7,8 @@ import 'package:chat_shop/src/features/cart/cubit/cart_state.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/bottom_sheet.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/cartitem.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/custom_list.dart';
-import 'package:chat_shop/src/features/cart/ui/widgets/divider.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/dropdown_widget.dart';
+import 'package:chat_shop/src/features/cart/ui/widgets/error_dialog.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/normal_heading.dart';
 
 import 'package:chat_shop/src/features/cart/ui/widgets/total_cart.dart';
@@ -36,11 +36,30 @@ class _CartPageState extends State<CartPage> {
   late final ValueNotifier<int> totalcartquantity = ValueNotifier(
     widget.cartlength,
   );
+  final ValueNotifier<String> errorNotifier = ValueNotifier('');
+  final TextEditingController controller = TextEditingController();
   final ValueNotifier<double> totalcost = ValueNotifier(0);
   final ValueNotifier<String?> locationnotifier = ValueNotifier(null);
   final ValueNotifier<bool> isloading = ValueNotifier(false);
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  late String selectedLoaction = widget.user.address;
+  final GlobalKey<NavigatorState> _key = GlobalKey<NavigatorState>();
+  final ValueNotifier<String> selectedLoaction = ValueNotifier('');
+  @override
+  void initState() {
+    super.initState();
+    fetch();
+  }
+
+  void fetch() async {
+    await di<CartCubit>().getlocation(
+      widget.user.address,
+      isloading,
+      locationnotifier,
+      controller,
+      errorNotifier,
+      selectedLoaction
+    );
+  }
+
   Widget listofitem(List<SearchDomain> items) {
     final cubit = context.read<CartCubit>();
 
@@ -114,24 +133,17 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _dropdown() {
-    return Form(
-      key: _key,
-      child: DropdownWidget(
-        isloading: isloading,
-        yourDefaultvalue: widget.user.address,
-        yourdefaultlabel: widget.user.address,
-        onTaponCurrentlocation: locationnotifier,
-        onSelected: (value) async {
-          final selected = await context.read<CartCubit>().getlocation(
-            value,
-            isloading,
-            locationnotifier,
-          );
-          selectedLoaction = selected ?? '';
-
-          if (_key.currentState!.validate()) {}
-        },
-      ),
+    return DropdownWidget(
+      controller: controller,
+      isloading: isloading,
+      yourDefaultvalue: widget.user.address,
+      yourdefaultlabel: widget.user.address,
+      onTaponCurrentlocation: locationnotifier,
+      onSelected: (value) async {
+       
+        selectedLoaction.value = value!;
+        controller.text = value;
+      },
     );
   }
 
@@ -147,7 +159,7 @@ class _CartPageState extends State<CartPage> {
           final uid = Uuid();
           final orders = Orders(
             name: widget.user.name,
-            address: selectedLoaction,
+            address: selectedLoaction.value,
             phone: widget.user.phone,
             orderId: uid.v4(),
             total: totalcost.value.toString(),
@@ -166,46 +178,73 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartCubit, CartState>(
-      builder: (context, state) {
-        if (state is Cartloading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is Cartloaded) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
-            ),
-            body: Column(
-              crossAxisAlignment: .start,
-              children: [
-                NormalHeading(yourheading: 'Shopping Cart'),
-                _dropdown(),
-                CustomDivider(),
-                listofitem(state.item),
-                CustomDivider(),
-              ],
-            ),
+    return Stack(
+      children: [
+        BlocBuilder<CartCubit, CartState>(
+          builder: (context, state) {
+            if (state is Cartloading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is Cartloaded) {
+              return Scaffold(
+                key: _key,
+                appBar: AppBar(
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                ),
+                body: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    NormalHeading(yourheading: 'Shopping Cart'),
+                    _dropdown(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8),
+                      child: Divider(),
+                    ),
+                    listofitem(state.item),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8),
+                      child: Divider(),
+                    ),
+                  ],
+                ),
 
-            bottomSheet: CartBottomSheet(
-              children: [
-                _totalRow(state.totalcost),
+                bottomNavigationBar: SafeArea(
+                  child: CartBottomSheet(
+                    children: [
+                      _totalRow(state.totalcost),
 
-                CustomDivider(),
-                _placebuttom(state.item),
-              ],
-            ),
-          );
-        } else if (state is CartError) {
-          return Text(state.error ?? 'some thing Went wrong');
-        } else {
-          return Center(child: Text('No Item yet'));
-        }
-      },
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: Divider(),
+                      ),
+                      _placebuttom(state.item),
+                    ],
+                  ),
+                ),
+              );
+            } else if (state is CartError) {
+              return Text(state.error ?? 'some thing Went wrong');
+            } else {
+              return Center(child: Text('No Item yet'));
+            }
+          },
+        ),
+        ErrorDialog(
+          onTap: () {
+            fetch();
+            errorNotifier.value = '';
+          },
+          onCancel: () {
+            errorNotifier.value = '';
+          },
+          errorNotifier: errorNotifier,
+          errorTitle: 'Location',
+        ),
+      ],
     );
   }
 }

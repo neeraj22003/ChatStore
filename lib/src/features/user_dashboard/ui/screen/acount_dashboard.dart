@@ -1,3 +1,4 @@
+import 'package:chat_shop/src/core/all_state_reseter/reseter.dart';
 import 'package:chat_shop/src/core/assets/images.dart';
 import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 import 'package:chat_shop/src/features/auth/cubit/auth_cubit.dart';
@@ -15,13 +16,25 @@ import 'package:chat_shop/src/features/user_dashboard/ui/widget/profile_containe
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AccountDashboard extends StatelessWidget {
+class AccountDashboard extends StatefulWidget {
   const AccountDashboard({super.key});
+
+  @override
+  State<AccountDashboard> createState() => _AccountDashboardState();
+}
+
+class _AccountDashboardState extends State<AccountDashboard> {
+  @override
+  void initState() {
+    super.initState();
+    di<UserDashboardCubit>().getUser();
+  }
 
   Widget lougoutbutton(BuildContext context) {
     return TextButton(
       onPressed: () async {
         await di<AuthCubit>().logout();
+         di<Reseter>().call();
         if (context.mounted) {
           Navigator.of(context).pop();
         }
@@ -56,7 +69,7 @@ class AccountDashboard extends StatelessWidget {
             ),
 
       onTap: () {
-        context.read<UserDashboardCubit>().linkWithGoogle();
+        di<UserDashboardCubit>().linkWithGoogle();
       },
     );
   }
@@ -66,7 +79,7 @@ class AccountDashboard extends StatelessWidget {
         ? const SizedBox.shrink()
         : TextButton(
             onPressed: () async {
-              context.read<UserDashboardCubit>().unlink();
+              di<UserDashboardCubit>().unlink();
             },
             child: const Text('Unlink'),
           );
@@ -74,13 +87,28 @@ class AccountDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserDashboardCubit, UserState>(
+    return BlocBuilder<UserDashboardCubit, UserDashBoardState>(
       builder: (context, state) {
-        if (state.isloading) {
+        if (state is UserDashBoardLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state.error != null) {
-          return Center(child: Text(state.error!));
-        } else if (state.userdata != null) {
+        } else if (state is UserDashBoardError) {
+          return Center(
+            child: AlertDialog(
+              title: Text('Linking Error'),
+              content: Text(
+                'Something went wrong while linking ,Please retry.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    di<UserDashboardCubit>().retry();
+                  },
+                  child: Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        } else if (state is UserDashBoardLoaded) {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
@@ -94,7 +122,7 @@ class AccountDashboard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _profilecontainer(state.userdata!),
+                  _profilecontainer(state.user),
 
                   _googlelinkWidget(state.islinked, context),
 

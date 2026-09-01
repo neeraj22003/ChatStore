@@ -82,9 +82,7 @@ class AuthServiceImpl implements AuthService {
   @override
   Future<Result<bool>> verify() async {
     try {
-      if (auth.currentUser == null) {
-        Result.onSuccess(false);
-      }
+      
 
       await auth.currentUser?.reload();
       final freshuser = FirebaseAuth.instance.currentUser;

@@ -1,5 +1,4 @@
 import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
-import 'package:chat_shop/src/features/search/bloc/searc_bloc/search_event.dart';
 import 'package:chat_shop/src/features/search_users/domain/searchuser_domain.dart';
 
 abstract class SearchUserState {}

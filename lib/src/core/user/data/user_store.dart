@@ -2,7 +2,6 @@ import 'package:chat_shop/src/core/result/result_domain.dart';
 import 'package:chat_shop/src/core/user/data/user_domain_dto.dart';
 import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 import 'package:chat_shop/src/core/user/domain/user_firestore.dart';
-import 'package:chat_shop/src/features/auth/domain/auth_domain.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,6 +12,7 @@ class UserStoreImpl implements UserStore {
 
   @override
   Future<Result<UserDomain>> getUser() async {
+    print(auth.currentUser!.uid);
     try {
       final user = await store
           .collection('users')
@@ -27,13 +27,12 @@ class UserStoreImpl implements UserStore {
         return Result.onfailure('no user exist yet');
       }
     } catch (e) {
-      
       return Result.onfailure(e.toString());
     }
   }
 
   @override
-  Future<Result<bool>> injectprofileimage() async {
+  Future<Result<String?>> injectprofileimage() async {
     try {
       await auth.currentUser?.reload();
       final reloadeduser = FirebaseAuth.instance.currentUser;
@@ -44,20 +43,20 @@ class UserStoreImpl implements UserStore {
       await store.collection('users').doc(auth.currentUser?.uid).update({
         'profileimage': profileimge,
       });
-      return Result.onSuccess(true);
+      return Result.onSuccess(profileimge);
     } catch (e) {
       return Result.onfailure(e.toString());
     }
   }
 
   @override
-  Future<Result<bool>> saveUser(AuthDomain user) async {
+  Future<Result<bool>> saveUser(UserDomain user) async {
     final userdata = UserDto(
-      id: auth.currentUser!.uid,
-      name: user.name!,
-      address: user.address!,
-      email: user.email!,
-      phone: user.phone!,
+      id: user.id,
+      name: user.name,
+      address: user.address,
+      email: user.email,
+      phone: user.phone,
     );
     try {
       await store

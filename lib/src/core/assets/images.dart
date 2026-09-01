@@ -13,4 +13,5 @@ class ImageService {
   static String get searchUserdark => '$ast/searchUserdark.png';
   static String get widelogin => '$ast/widelogin.jpg';
   static String get searchItembG => '$ast/searchbg.png';
+  static String get noChathistory => '$ast/no_chat_history.png';
 }

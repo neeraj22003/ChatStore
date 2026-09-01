@@ -1,28 +1,26 @@
 import 'package:chat_shop/src/core/items/domain/usecases/usecases_bundle/item_use_cases.dart';
 import 'package:chat_shop/src/core/result/result_domain.dart';
 
-import 'package:chat_shop/src/core/user/domain/user_usecases/user_usecase.dart';
 import 'package:chat_shop/src/features/cart/cubit/cart_state.dart';
 
 import 'package:chat_shop/src/core/items/domain/search_item_domain.dart';
 import 'package:chat_shop/src/features/cart/domain/cart_usecases.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CartCubit extends Cubit<CartState> {
   final ItemUseCases itemUseCases;
-  
+
   final CartUsecases cartUsecases;
-  CartCubit(this.itemUseCases, this.cartUsecases)
-    : super(Cartinitial());
+  CartCubit(this.itemUseCases, this.cartUsecases) : super(Cartinitial());
 
   Future<void> additemToCart(SearchDomain item) async {
     emit(Cartloading());
     try {
       await itemUseCases.saveItem.call(item);
       final cartitem = itemUseCases.getCartlist.call();
-      
+
       final totalcost = itemUseCases.getTotalCost.call();
 
       emit(Cartloaded(cartitem, totalcost));
@@ -38,7 +36,6 @@ class CartCubit extends Cubit<CartState> {
       } else if (items.error != null) {
         emit(CartError(items.error));
       } else {
-        
         final totalcost = itemUseCases.getTotalCost.call();
         emit(Cartloaded(items.data!, totalcost));
       }
@@ -91,32 +88,27 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  Future<String?> getlocation(
-    String? value,
+  Future<void> getlocation(
+    String deFaultvalue,
     ValueNotifier<bool> isloading,
     ValueNotifier<String?> currentlocation,
+    TextEditingController controller,
+    ValueNotifier<String> errot,
+    ValueNotifier<String> selectedlocation,
   ) async {
-    try {
-      if (value == null || value.isEmpty) {
-        isloading.value = true;
-        final location = await cartUsecases.getLocation.call();
+    isloading.value = true;
+    final location = await cartUsecases.getLocation.call();
 
-        if (location.error != null) {
-          emit(CartError(location.error));
-        } else {
-          await Future.delayed(const Duration(seconds: 1));
-          currentlocation.value = location.data;
-          isloading.value = false;
-          return location.data ?? '';
-        }
-      } else {
-        isloading.value = false;
-        return value;
-      }
-    } catch (e) {
-      emit(CartError(e.toString()));
+    if (location.error != null) {
+      isloading.value = false;
+
+      errot.value = location.error ?? '';
     }
-    return value;
+    await Future.delayed(const Duration(seconds: 1));
+    currentlocation.value = location.data;
+    controller.text = location.data ?? deFaultvalue;
+    selectedlocation.value = controller.text;
+    isloading.value = false;
   }
 
   Future<void> clearCart() async {
@@ -126,10 +118,7 @@ class CartCubit extends Cubit<CartState> {
     }
 
     if (result.isSuccess) {
-    
-        emit(Cartinitial());
-      
-      
+      emit(Cartinitial());
     }
   }
 }

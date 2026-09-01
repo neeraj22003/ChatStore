@@ -1,7 +1,6 @@
 import 'package:chat_shop/src/core/widgets/counter_widget.dart';
 import 'package:chat_shop/src/core/widgets/itembuilder.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/cartitem.dart';
-import 'package:chat_shop/src/features/cart/ui/widgets/divider.dart';
 import 'package:chat_shop/src/features/cart/ui/widgets/normal_heading.dart';
 import 'package:chat_shop/src/features/orders/bloc/order_bloc.dart';
 import 'package:chat_shop/src/features/orders/bloc/order_events.dart';
@@ -98,9 +97,15 @@ class OrderSummary extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomDivider(),
+            Padding(
+              padding: const EdgeInsets.only(left:8.0,right: 8),
+              child: Divider(),
+            ),
             summarItem(),
-            CustomDivider(),
+            Padding(
+              padding: const EdgeInsets.only(left:8.0,right: 8),
+              child: Divider(),
+            ),
 
             NormalHeading(yourheading: 'Order Summary'),
             ordersummarydetails(theme.surfaceContainer),

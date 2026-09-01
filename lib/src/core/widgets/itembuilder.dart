@@ -13,6 +13,7 @@ class Itembuilder<T> extends StatelessWidget {
   final int? truncatedevidecountvalue;
   final ScrollPhysics? physics;
   final double? mainaxisextent;
+  final int? customCount;
   const Itembuilder({
     super.key,
     this.physics,
@@ -24,6 +25,7 @@ class Itembuilder<T> extends StatelessWidget {
     this.waitingWidget,
     this.errorWidget,
     this.itemBuilder,
+    this.customCount
   });
 
   Widget grid(List<T> data, bool loading) {
@@ -38,11 +40,11 @@ class Itembuilder<T> extends StatelessWidget {
           shrinkWrap: true,
           physics: physics,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
+            crossAxisCount: customCount?? crossAxisCount,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
 
-            mainAxisExtent: mainaxisextent??160,
+            mainAxisExtent: mainaxisextent ?? 160,
           ),
           itemCount: isloading ? skeletoncount : data.length,
           itemBuilder: (context, index) {

@@ -50,15 +50,14 @@ class AuthRepositoryImpl implements AuthRepository {
     return Result.onfailure(result.error);
   }
 
-
   @override
   Future<Result<bool>> verify() async {
     final result = await _auth.verify();
     if (result.isFailure) {
-    
+      print('error');
       return Result.onfailure(result.error);
     }
-  
-    return Result.onSuccess(result.data!);
+
+    return Result.onSuccess(result.data ?? true);
   }
 }

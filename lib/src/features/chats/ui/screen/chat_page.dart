@@ -1,30 +1,29 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_shop/src/core/assets/images.dart';
+import 'package:chat_shop/src/core/layout/utils/responsive.dart';
+import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 import 'package:chat_shop/src/core/widgets/circle_image.dart';
-import 'package:chat_shop/src/features/cart/ui/widgets/divider.dart';
+import 'package:chat_shop/src/features/chat_history/domain/chat_history_domain.dart';
 import 'package:chat_shop/src/features/chats/bloc/chat_bloc.dart';
 import 'package:chat_shop/src/features/chats/bloc/chat_event.dart';
 import 'package:chat_shop/src/features/chats/bloc/chat_state.dart';
-import 'package:chat_shop/src/features/chats/ui/widgets/chat_bubble.dart';
+import 'package:chat_shop/src/features/chats/ui/screen/chat_view.dart';
 import 'package:chat_shop/src/features/chats/ui/widgets/sender_row.dart';
 import 'package:chat_shop/src/injecters.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatPage extends StatefulWidget {
   final String? secondguyid;
   final String? secondguyname;
   final String? secondguyemail;
-
+  final UserDomain currentuser;
   final String? profileimage;
   const ChatPage({
     super.key,
     required this.secondguyemail,
     required this.secondguyid,
     required this.secondguyname,
-
+    required this.currentuser,
     required this.profileimage,
   });
 
@@ -35,6 +34,12 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    di<ChatBloc>().add(CreateChatdoc(widget.secondguyid!));
+  }
+
   Widget chatContainer() {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state) {
@@ -43,7 +48,7 @@ class _ChatPageState extends State<ChatPage> {
             child: SizedBox(
               height: 25,
               width: 25,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircularProgressIndicator(strokeWidth: 3),
             ),
           );
         } else if (state is Chaterror) {
@@ -51,17 +56,9 @@ class _ChatPageState extends State<ChatPage> {
         } else if (state is ChatisInitial) {
           return Center(child: const Text('no chats yet'));
         } else if (state is Chatloaded) {
-          return ListView.builder(
-            itemCount: state.chat.length,
-            itemBuilder: (context, index) {
-              final chat = state.chat[index];
-              ChatBubble(
-                message: chat.message,
-                currentuserid: state.currentUser.id,
-                senderid: chat.senderid,
-                timestamp: chat.timestamp!,
-              );
-            },
+          return ChatSview(
+            chats: state.chat,
+            currentUserid: widget.currentuser.id,
           );
         } else {
           return const SizedBox.shrink();
@@ -88,21 +85,33 @@ class _ChatPageState extends State<ChatPage> {
   ) {
     return Row(
       children: [
-        
+        isDesktop
+            ? const SizedBox.shrink()
+            : IconButton(
+                highlightColor: const Color.fromARGB(255, 216, 214, 214),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(color: Colors.white, Icons.arrow_back),
+              ),
         circleimage(color),
-        Flexible(
+        Expanded(
           child: ListTile(
             contentPadding: const EdgeInsets.only(left: 3),
             title: Text(
               widget.secondguyname ?? '',
-              style: TextStyle(fontWeight: FontWeight.w500),
+
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
             subtitle: Padding(
-              padding: const EdgeInsets.only(bottom: 3),
+              padding: const EdgeInsets.only(bottom: 3, right: 20),
               child: Text(
                 widget.secondguyemail ?? '',
-                style: TextStyle(fontSize: 11.5),
+                style: TextStyle(fontSize: 11.5, color: Colors.white),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -132,8 +141,21 @@ class _ChatPageState extends State<ChatPage> {
             controller: _controller,
             onSend: () {
               di<ChatBloc>().add(
-                Sendmessage(widget.secondguyid!, _controller.text),
+                Sendmessage(
+                  ChatHistoryDomain(
+                    receiverid: widget.secondguyid!,
+                    lastmessage: _controller.text.trim(),
+                    receiverName: widget.secondguyname!,
+                    receiverEmail: widget.secondguyemail!,
+                    receiverProfile: widget.profileimage!,
+                    senderid: widget.currentuser.id,
+                    senderName: widget.currentuser.name,
+                    senderEmail: widget.currentuser.email,
+                    senderProfile: widget.currentuser.profileimage,
+                  ),
+                ),
               );
+              _controller.clear();
             },
           ),
         ],
@@ -142,26 +164,40 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (MediaQuery.of(context).size.width > 485) {
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final currentWidth = constraints.maxWidth;
-        final isDesktopNow = currentWidth > 480;
 
-        return Scaffold(
-          appBar: AppBar(
-            shadowColor: Colors.black,
-            elevation: 6,
-            leadingWidth: 230,
-            leading: profileContainer(context, color, isDesktopNow),
-            backgroundColor: color.surfaceContainer,
-            actions: [IconButton(onPressed: (){}, icon:Icon(Icons.more_vert))],
+    return Scaffold(
+      appBar: AppBar(
+        shadowColor: Colors.black,
+        elevation: 6,
+        leadingWidth: 300,
+        leading: profileContainer(
+          context,
+          color,
+          LayoutUtils.isBigScreen(context),
+        ),
+        backgroundColor: const Color.fromARGB(255, 10, 33, 108),
+        actions: [
+          IconButton(
+            highlightColor: const Color.fromARGB(255, 222, 222, 222),
+            onPressed: () {},
+            icon: Icon(Icons.more_vert, color: Colors.white),
           ),
+        ],
+      ),
 
-          body: _chatBg(color),
-        );
-      },
+      body: _chatBg(color),
     );
   }
 }

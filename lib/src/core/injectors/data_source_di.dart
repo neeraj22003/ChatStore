@@ -6,6 +6,7 @@ import 'package:chat_shop/src/core/user/data/user_store.dart';
 import 'package:chat_shop/src/features/auth/data/auth_service_impl.dart';
 
 import 'package:chat_shop/src/features/cart/data/location_service.dart';
+import 'package:chat_shop/src/features/chat_history/data/chat_history_data.dart';
 import 'package:chat_shop/src/features/chats/data/chat_data_source.dart';
 import 'package:chat_shop/src/features/orders/data/order_localdb.dart';
 import 'package:chat_shop/src/features/orders/data/order_storeimpl.dart';
@@ -38,4 +39,5 @@ Future<void> dataSourceDi() async {
     () => OrderStoreimpl(di<FirebaseFirestore>(), di<FirebaseAuth>()),
   );
   di.registerFactory(() => ChatDataSource(di<FirebaseFirestore>()));
+  di.registerFactory(() => ChatHistoryData(di<FirebaseFirestore>()));
 }

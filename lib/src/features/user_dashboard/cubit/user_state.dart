@@ -1,23 +1,18 @@
 import 'package:chat_shop/src/core/user/domain/user_domain_entities.dart';
 
-class UserState {
-  final UserDomain? userdata;
-  final bool isloading;
-  final String? error;
-  final bool islinked;
-  UserState({this.userdata, this.isloading=false, this.error, this.islinked=false});
+abstract class UserDashBoardState {}
 
-  UserState copywith({
-    final UserDomain? userdata,
-    final bool? isloading,
-    final String? error,
-    final bool? islinked,
-  }) {
-    return UserState(
-      userdata: userdata ?? this.userdata,
-      isloading: isloading ?? this.isloading,
-      error: error ?? this.error,
-      islinked: islinked ?? this.islinked,
-    );
-  }
+class UserDashBoardInitial extends UserDashBoardState {}
+
+class UserDashBoardLoading extends UserDashBoardState {}
+
+class UserDashBoardLoaded extends UserDashBoardState {
+  final UserDomain user;
+  final bool islinked;
+  UserDashBoardLoaded({required this.user,required this.islinked});
+}
+
+class UserDashBoardError extends UserDashBoardState {
+  final String? error;
+  UserDashBoardError(this.error);
 }

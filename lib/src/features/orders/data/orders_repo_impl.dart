@@ -37,7 +37,7 @@ class OrdersRepoImpl implements OrderRepo {
 
   @override
   void loadOrders(List<Orders> orders) {
-    print(orders.length);
+    print('odercache${orders.length}');
     for (var i in orders) {
       _cache[i.orderId] = i;
     }
@@ -49,7 +49,7 @@ class OrdersRepoImpl implements OrderRepo {
       return Result.onSuccess(_cache.values.toList());
     }
     final localdb = await orderLocaldb.getOrder();
-    if (localdb.isSuccess) {
+    if (localdb.data!.isNotEmpty) {
       
       loadOrders(localdb.data!);
       return Result.onSuccess(_cache.values.toList());

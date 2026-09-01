@@ -5,6 +5,9 @@ import 'package:chat_shop/src/features/auth/cubit/auth_cubit.dart';
 import 'package:chat_shop/src/features/auth/domain/use_cases.dart/usecases_bundle/use_cases_bundle.dart';
 import 'package:chat_shop/src/features/cart/cubit/cart_cubit.dart';
 import 'package:chat_shop/src/features/cart/domain/cart_usecases.dart';
+import 'package:chat_shop/src/features/chat_history/bloc/chat_history_bloc.dart';
+import 'package:chat_shop/src/features/chat_history/domain/chat_history_use_cases/use_cases.dart';
+
 import 'package:chat_shop/src/features/chats/bloc/chat_bloc.dart';
 import 'package:chat_shop/src/features/chats/domain/use_cases/chat_usecase/chat_use_cases.dart';
 import 'package:chat_shop/src/features/orders/bloc/order_bloc.dart';
@@ -20,21 +23,33 @@ import 'package:chat_shop/src/features/user_dashboard/cubit/user_cubit.dart';
 import 'package:chat_shop/src/features/user_dashboard/domain/use_cases/use_cases.dart';
 import 'package:chat_shop/src/injecters.dart';
 
-
 Future<void> cubitBlocDi() async {
-  di.registerLazySingleton(() => AuthCubit(di<AuthUseCases>(), di<UserUsecase>()));
   di.registerLazySingleton(
-    () => CartCubit(di<ItemUseCases>(),  di<CartUsecases>()),
+    () => AuthCubit(di<AuthUseCases>(), di<UserUsecase>()),
+  );
+  di.registerLazySingleton(
+    () => CartCubit(di<ItemUseCases>(), di<CartUsecases>()),
   );
   di.registerLazySingleton(() => OrderBloc(di<OrderUsecases>()));
-  di.registerFactory(() {
+  di.registerLazySingleton(() {
     final bloc = SearchBloc(di<SearchUsecases>());
     bloc.add(OnloadDailyDeals());
     return bloc;
   });
-  di.registerFactory(() => DetailCubit(di<ItemUseCases>()));
-  di.registerLazySingleton(() => SearchUserBloc(di<SearchuserUseCase>(),di<UserUsecase>()));
-  di.registerLazySingleton(() => UserDashboardCubit(di<UserUsecase>(), di<UserdashboardUseCases>()));
-  di.registerFactory(() => EndDrawerBloc(di<ItemUseCases>(),di<UserUsecase>()));
-  di.registerFactory(()=>ChatBloc(di<ChatUseCases>(), di<UserUsecase>()));
+  di.registerLazySingleton(() => DetailCubit(di<ItemUseCases>()));
+  di.registerLazySingleton(
+    () => SearchUserBloc(di<SearchuserUseCase>(), di<UserUsecase>()),
+  );
+  di.registerLazySingleton(
+    () => UserDashboardCubit(di<UserUsecase>(), di<UserdashboardUseCases>()),
+  );
+  di.registerLazySingleton(
+    () => EndDrawerBloc(di<ItemUseCases>(), di<UserUsecase>()),
+  );
+  di.registerLazySingleton(
+    () => ChatBloc(di<ChatUseCases>(), di<UserUsecase>()),
+  );
+  di.registerLazySingleton(
+    () => ChatHistoryBloc(di<ChathistoryUseCases>(), di<UserUsecase>()),
+  );
 }

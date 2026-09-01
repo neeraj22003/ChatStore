@@ -35,7 +35,7 @@ class DescriptionWidget extends StatelessWidget {
               onTap: onpressed,
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text(style: TextStyle(color: Colors.blue),
+                child: Text(style: TextStyle(color: Colors.blue,fontSize: 12),
                   isexpaned ? 'Read Less' : 'Read More'),
               ),
             ):const SizedBox.shrink(),

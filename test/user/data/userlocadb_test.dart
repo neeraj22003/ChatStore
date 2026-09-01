@@ -9,7 +9,7 @@ void main() {
     databaseFactory = databaseFactoryFfi;
     final path = join(await getDatabasesPath(), 'test.db');
     final userdb = await UserLocaldbimpl().initDb(path);
-    await userdb!.insert('user', {'id': '123'});
+    await userdb.insert('user', {'id': '123'});
     final check = await userdb.query('user');
   
     expect(check.first['id'], '123');

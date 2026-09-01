@@ -50,7 +50,7 @@ class CounterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
 
-    return onDecrement != null || onIncrement != null
+    return SafeArea(child: onDecrement != null || onIncrement != null
         ? Row(
             mainAxisSize: .min,
             children: [
@@ -61,6 +61,6 @@ class CounterWidget extends StatelessWidget {
               trailing == null ? const SizedBox.shrink() : trailing!,
             ],
           )
-        :Row(mainAxisSize: .min, children: [ numcontainer(color)]);
+        :Row(mainAxisSize: .min, children: [ numcontainer(color)]));
   }
 }

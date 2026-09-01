@@ -1,6 +1,11 @@
 import 'package:chat_shop/src/core/assets/images.dart';
+import 'package:chat_shop/src/core/layout/notfiers/notifiers.dart';
+import 'package:chat_shop/src/core/layout/utils/responsive.dart';
+import 'package:chat_shop/src/core/utils/chat_utils.dart';
 import 'package:chat_shop/src/core/widgets/itembuilder.dart';
 import 'package:chat_shop/src/core/widgets/searchbar.dart';
+import 'package:chat_shop/src/features/chat_history/domain/chat_history_domain.dart';
+import 'package:chat_shop/src/features/chat_history/notifiers/notifiers.dart';
 import 'package:chat_shop/src/features/chats/ui/screen/chat_page.dart';
 import 'package:chat_shop/src/features/search_users/bloc/search_user_block.dart';
 import 'package:chat_shop/src/features/search_users/bloc/search_user_event.dart';
@@ -62,17 +67,38 @@ class _UsersPageState extends State<UsersPage> {
                       ? null
                       : const Icon(Icons.chat),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(
-                          secondguyid: user.id,
-                          secondguyname: user.name,
-                          profileimage: user.profileimage,
-                          secondguyemail: user.email,
-                        ),
-                      ),
+                    if (state.currentuser.id == user.id) return;
+                    final chatid = ChatUtils.genrateChatId(
+                      user.id,
+                      state.currentuser.id,
                     );
+                    if (LayoutUtils.isBigScreen(context)) {
+                      di<Not>().navigationIndex.value = 2;
+                      di<ChatNotifiers>().selectchatid.value = chatid;
+
+                      di<ChatNotifiers>().historyNotifier.value =
+                          ChatHistoryDomain(
+                            chatId: chatid,
+                            chatUserId: user.id,
+                            chatUsername: user.name,
+                            chatUseremail: user.email,
+                            chatuserprofile: user.profileimage,
+                            currentUser: state.currentuser
+                          );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            secondguyid: user.id,
+                            secondguyname: user.name,
+                            profileimage: user.profileimage,
+                            secondguyemail: user.email,
+                            currentuser: state.currentuser,
+                          ),
+                        ),
+                      );
+                    }
                   },
                 );
               },
