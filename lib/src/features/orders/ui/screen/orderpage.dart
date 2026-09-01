@@ -1,53 +1,60 @@
-import 'dart:math';
+import 'package:chat_shop/src/core/assets/images.dart';
+import 'package:chat_shop/src/core/widgets/itembuilder.dart';
+import 'package:chat_shop/src/features/orders/bloc/order_bloc.dart';
 
-import 'package:flutter/cupertino.dart';
+import 'package:chat_shop/src/features/orders/bloc/order_states.dart';
+
+import 'package:chat_shop/src/features/orders/ui/screen/order_summary.dart';
+import 'package:chat_shop/src/features/orders/ui/widgets/order_card.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_experiments/core/services/images.dart';
-import 'package:flutter_experiments/features/orders/ui/widgets/order_card.dart';
-import 'package:flutter_experiments/features/orders/ui/providers/order_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Orderpage extends StatelessWidget {
   const Orderpage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OrderProvider>(
-      builder: (context, provider, child) {
-        return provider.oders.isNotEmpty
-            ? Ordertopitemcardlist(provider: provider)
-            : Center(
-                child: SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Image.asset(ImageService.noOrders, fit: BoxFit.cover),
-                ),
-              );
-      },
-    );
-  }
-}
-
-class Ordertopitemcardlist extends StatelessWidget {
-  final OrderProvider provider;
-  const Ordertopitemcardlist({super.key, required this.provider});
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constrainst) {
-        final count = max(1, constrainst.maxWidth ~/ 200);
-        return GridView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: provider.oders.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: provider.oders.length > 1 ? count : 1,
-            mainAxisExtent: 160,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 10,
-          ),
-          itemBuilder: (context, index) =>
-              OrderCard(order: provider.oders[index]),
-        );
+    return BlocBuilder<OrderBloc, OrderStates>(
+      builder: (context, state) {
+        if (state is OrderError) {
+          return Center(child: Text(state.error ?? 'error'));
+        } else if (state is OrderLoading) {
+          return Center(child: const CircularProgressIndicator());
+        } else if (state is OrderLoaded) {
+          return  Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Itembuilder(
+              mincount: 1,
+              items: state.orders,
+              itemBuilder: (context, order) {
+             
+                return OrderCard(
+                  
+                  appname: 'Chat Shop',
+                  appIconImg: ImageService.appImage,
+                  images: order.items.map((data) => data.imageUrl).toList(),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderSummary(orders: order),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          );
+        } else {
+          return Center(
+            child: SizedBox(
+              height: 100,
+              width: 100,
+              child: Image.asset(ImageService.noOrders, fit: BoxFit.cover),
+            ),
+          );
+        }
       },
     );
   }
